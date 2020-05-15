@@ -3,9 +3,6 @@
 *.pdb
 *.idb
 *.log
-*.vcxproj
-*.vcxproj.user
-*.vcxproj.filters
 *.ilk
 *.tlog
 .vs
