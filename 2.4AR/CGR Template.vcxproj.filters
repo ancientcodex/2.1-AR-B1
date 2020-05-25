@@ -60,4 +60,14 @@
   <ItemGroup>
     <Xml Include="haarcascade_frontalface_alt.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Object Include="x64\Debug\person_figure.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="x64\Debug\person_figure.mtl">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
