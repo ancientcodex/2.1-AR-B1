@@ -60,4 +60,7 @@
   <ItemGroup>
     <Xml Include="haarcascade_frontalface_alt.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
