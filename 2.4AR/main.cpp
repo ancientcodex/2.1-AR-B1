@@ -22,9 +22,9 @@ void facerecognition();
 int main(int argc, char* argv[])
 {
 	thread t1(startup);
-	thread t2(facerecognition);
+	//thread t2(facerecognition);
 	t1.join();
-	t2.join();
+	//t2.join();
 	return 0;
 }
 
