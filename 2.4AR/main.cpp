@@ -12,6 +12,7 @@
 #include "SkinDetector.h"
 #include "FaceDetector.h"
 #include "FingerCount.h"
+#include <thread>
 
 using namespace cv;
 using namespace std;
