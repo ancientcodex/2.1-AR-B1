@@ -112,8 +112,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.2\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);C:\Users\thijz\Desktop\TI jaar 2\TI 2.4\Computer_vision\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories);D:\Programs\OpenCV\opencv\build\x64\vc14\lib;D:\Programs\OpenCV\opencv\build\x64\vc14\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world430d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.2\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);C:\Users\thijz\Desktop\TI jaar 2\TI 2.4\Computer_vision\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories);D:\Programs\OpenCV\opencv\build\x64\vc14\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world341d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -161,6 +161,7 @@
     <ClCompile Include="BackgroundRemover.cpp" />
     <ClCompile Include="FaceDetector.cpp" />
     <ClCompile Include="FingerCount.cpp" />
+    <ClCompile Include="FpsCam.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SkinDetector.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="BackgroundRemover.h" />
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FingerCount.h" />
+    <ClInclude Include="FpsCam.h" />
     <ClInclude Include="SkinDetector.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
