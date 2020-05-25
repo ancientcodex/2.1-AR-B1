@@ -2,19 +2,17 @@
 #include <opencv2/opencv.hpp>
 #include "opencv2/highgui/highgui.hpp"
 
-using namespace cv;
-using namespace std;
 
 class BackgroundRemover {
 public:
 	BackgroundRemover(void);
-	void calibrate(Mat input);
-	Mat getForeground(Mat input);
+	void calibrate(cv::Mat input);
+	cv::Mat getForeground(cv::Mat input);
 
 private:
-	Mat background;
+	cv::Mat background;
 	bool calibrated = false;
 
-	Mat getForegroundMask(Mat input);
-	void removeBackground(Mat input, Mat background);
+	cv::Mat getForegroundMask(cv::Mat input);
+	void removeBackground(cv::Mat input, cv::Mat background);
 };

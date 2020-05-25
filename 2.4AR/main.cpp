@@ -14,14 +14,12 @@
 #include "FingerCount.h"
 #include <thread>
 
-using namespace cv;
-using namespace std;
 
 void facerecognition();
 
 int main(int argc, char* argv[])
 {
-	thread t1(startup);
+	std::thread t1(startup);
 	//thread t2(facerecognition);
 	t1.join();
 	//t2.join();
@@ -30,15 +28,15 @@ int main(int argc, char* argv[])
 
 void facerecognition() {
 
-	VideoCapture cam("http://192.168.1.27:4747/mjpegfeed");
-	cam.set(CAP_PROP_SETTINGS, 1);
+	cv::VideoCapture cam("http://192.168.1.27:4747/mjpegfeed");
+	cam.set(cv::CAP_PROP_SETTINGS, 1);
 
 	if (!cam.isOpened()) {
-		cout << "Can't find camera!" << endl;
+		std::cout << "Can't find camera!" << std::endl;
 		return ;
 	}
 
-	Mat frame, frameOut, handMask, foreground, fingerCountDebug;
+	cv::Mat frame, frameOut, handMask, foreground, fingerCountDebug;
 
 	BackgroundRemover backgroundRemover;
 	SkinDetector skinDetector;
@@ -64,7 +62,7 @@ void facerecognition() {
 		imshow("handMask", handMask);
 		imshow("handDetection", fingerCountDebug);
 
-		int key = waitKey(1);
+		int key = cv::waitKey(1);
 
 		if (key == 27) // esc
 			break;
