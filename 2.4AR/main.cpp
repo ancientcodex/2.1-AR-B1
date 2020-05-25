@@ -34,7 +34,7 @@ void facerecognition() {
 
 	if (!cam.isOpened()) {
 		cout << "Can't find camera!" << endl;
-		return ;
+		return;
 	}
 
 	Mat frame, frameOut, handMask, foreground, fingerCountDebug;
@@ -43,21 +43,18 @@ void facerecognition() {
 	SkinDetector skinDetector;
 	FaceDetector faceDetector;
 	FingerCount fingerCount;
-	int i = 0;
 
 
 	while (true) {
 		cam >> frame;
 		frameOut = frame.clone();
 		skinDetector.drawSkinColorSampler(frameOut);
-		if (i % 3 == 0) {
-			foreground = backgroundRemover.getForeground(frame);
-			faceDetector.removeFaces(frame, foreground);
-			handMask = skinDetector.getSkinMask(foreground);
-			fingerCountDebug = fingerCount.findFingersCount(handMask, frameOut);
-			imshow("foreground", foreground);
-			imshow("handMask", handMask);
-		}
+		foreground = backgroundRemover.getForeground(frame);
+		faceDetector.removeFaces(frame, foreground);
+		handMask = skinDetector.getSkinMask(foreground);
+		fingerCountDebug = fingerCount.findFingersCount(handMask, frameOut);
+		imshow("foreground", foreground);
+		imshow("handMask", handMask);
 		imshow("output", frameOut);
 		imshow("foreground", foreground);
 		imshow("handMask", handMask);
@@ -73,6 +70,5 @@ void facerecognition() {
 		else if (key == 115) {// s
 			skinDetector.calibrate(frame);
 		}
-		i++;
 	}
 }
