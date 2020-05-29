@@ -10,7 +10,7 @@ int cubeXPositions[2];
 int cubeYPositions[2];
 
 void ranPos();
-void cubeCreate(int x);
+void cubeCreate(int x, int y);
 glm::mat4 model = glm::mat4(1.0f);
 
 void startup() 
@@ -113,17 +113,17 @@ void draw()
 	tigl::shader->enableColor(true);
 	for (int i = 0; i < size; i++)
 	{
-		cubeCreate(cubeXPositions[i]);
+		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
 	
 	
 }
 
 
-	void cubeCreate(int x)
+	void cubeCreate(int x, int y)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(x, 0, -10));
+		model = glm::translate(model, glm::vec3(x, y, -10));
 
 		//(x-as, y-as, z-as) (left/right, up/down, front/back)
 		model = glm::translate(model, glm::vec3(0, 0, pos));
@@ -177,6 +177,7 @@ void draw()
 		for (int i = 0; i < size; i++)
 		{
 			cubeXPositions[i] = (rand() % 50) -24;
-			std::cout << "X: " << cubeXPositions[i] << ". ";
+			cubeYPositions[i] = (rand() % 30) - 14;
+			std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
 		}
 	}
