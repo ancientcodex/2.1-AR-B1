@@ -94,6 +94,7 @@ namespace CppCLRWinformsProjekt {
 			// 
 			this->label1->AutoSize = true;
 			this->label1->Location = System::Drawing::Point(493, 42);
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Arial", 10));
 			this->label1->Name = L"actionLabel";
 			this->label1->Size = System::Drawing::Size(85, 17);
 			this->label1->TabIndex = 2;
@@ -137,6 +138,7 @@ namespace CppCLRWinformsProjekt {
 			// best score label
 			// 
 			this->label3->AutoSize = true;
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Arial Bold", 12));
 			this->label3->Location = System::Drawing::Point(1215, 42);
 			this->label3->Name = L"bestScoreLabel";
 			this->label3->Size = System::Drawing::Size(82, 17);

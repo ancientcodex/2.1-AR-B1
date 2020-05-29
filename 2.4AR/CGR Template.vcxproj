@@ -107,13 +107,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\thijz\Desktop\TI jaar 2\TI 2.4\Computer_vision\opencv\build\include;$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;C:\Users\thijz\Desktop\TI jaar 2\TI 2.4\Project\2.4-AR-B1\2.4AR\lib\glfw-3.3.2\include;%(AdditionalIncludeDirectories);D:\Programs\OpenCV\opencv\build\include;D:\Programs\OpenCV\opencv\build\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\thijz\Desktop\TI jaar 2\TI 2.4\Computer_vision\opencv\build\include;$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;C:\Users\thijz\Desktop\TI jaar 2\TI 2.4\Project\2.4-AR-B1\2.4AR\lib\glfw-3.3.2\include;%(AdditionalIncludeDirectories);D:\Programs\OpenCV\opencv\build\include;D:\Program Files (x86)\opencv\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.2\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);C:\Users\thijz\Desktop\TI jaar 2\TI 2.4\Computer_vision\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories);D:\Programs\OpenCV\opencv\build\x64\vc14\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world341d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.2\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);C:\Users\thijz\Desktop\TI jaar 2\TI 2.4\Computer_vision\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories);D:\Programs\OpenCV\opencv\build\x64\vc14\lib;D:\Program Files (x86)\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world430d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
