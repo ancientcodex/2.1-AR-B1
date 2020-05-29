@@ -165,6 +165,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SkinDetector.cpp" />
     <ClCompile Include="tigl.cpp" />
+    <ClCompile Include="VisionManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3D.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="handDetector.h" />
     <ClInclude Include="SkinDetector.h" />
     <ClInclude Include="tigl.h" />
+    <ClInclude Include="VisionManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,13 +1,14 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 #include "opencv2/highgui/highgui.hpp"
+#include <opencv2/core/types.hpp>
 
-using namespace cv;
-using namespace std;
+
 
 class handDetector
 {
 public:
-	Mat detectHands(Mat input);
+	cv::Mat detectHands(cv::Mat input);
+	cv::Point getCenter();
 };
 
