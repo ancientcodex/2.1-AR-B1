@@ -1,12 +1,10 @@
 #include "3D.h"
 
 GLFWwindow* window;
-std::shared_ptr<DataManager> dataManager;
 
 
 void startup(std::shared_ptr<DataManager> dManager)
 {
-    dataManager = std::make_shared<DataManager>(*dManager);
 
     if (!glfwInit())
         throw "Could not initialize glwf";
