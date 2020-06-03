@@ -7,13 +7,17 @@
 
 GLFWwindow* window;
 ObjModel* modelT;
+GLuint textureId = -1;
+
 int size = 2;
 int cubeXPositions[2];
 int cubeYPositions[2];
 
 void ranPos();
 void cubeCreate(int x, int y);
+void createBackground();
 glm::mat4 model = glm::mat4(1.0f);
+glm::mat4 background = glm::mat4(1.0f);
 
 void startup() 
 {
@@ -55,6 +59,18 @@ void init()
 	srand(time(NULL));
 	ranPos();
 	modelT = new ObjModel("models/car/honda_jazz.obj");
+
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+
+	char data[32 * 32 * 4];
+	for (int i = 0; i < 32 * 32 * 4; i++)
+		data[i] = rand() % 255;
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 float angle = 0.0f;
@@ -115,37 +131,55 @@ void draw()
 	tigl::shader->setProjectionMatrix(projection);
 	tigl::shader->setViewMatrix(camera->getMatrix());
 
-	//tigl::shader->setModelMatrix(glm::mat4(1.0f));
-	tigl::shader->enableColor(true);
-
 	glEnable(GL_DEPTH_TEST);
+
+	createBackground();
 
 	for (int i = 0; i < size; i++)
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
-	}
-	
+	}	
 }
 
+	void createBackground() 
+	{
+		glm::mat4 background = glm::mat4(1.0f);
+		background = glm::translate(background, glm::vec3(0, 0, -50));
+
+		tigl::shader->setModelMatrix(background);
+		tigl::shader->enableColor(false);
+		tigl::shader->enableTexture(true);
+
+		tigl::begin(GL_QUADS);
+	
+		tigl::addVertex(Vertex::PC(glm::vec3(-10, 10, 10), glm::vec4(red, blue, blue, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(10, 10, 10), glm::vec4(blue, green, red, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(10, -10, 10), glm::vec4(red, green, blue, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-10, -10, 10), glm::vec4(green, green, blue, 1)));
+
+		tigl::end();
+	}
 
 	void cubeCreate(int x, int y)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(x, y, -10));
+		model = glm::translate(model, glm::vec3(x, y, -30));
 
 		//(x-as, y-as, z-as) (left/right, up/down, front/back)
 		model = glm::translate(model, glm::vec3(0, 0, pos));
-
 		model = glm::rotate(model, angle, glm::vec3(1, 1, 0));
 
 		tigl::shader->setModelMatrix(model);
+		tigl::shader->enableColor(true);
+		tigl::shader->enableTexture(false);
+
 		tigl::begin(GL_QUADS);
 
 		//achterkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, blue, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(blue, green, red, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(green, green, blue, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(255, 0, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(255, 0, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(255, 0, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(255, 0, 0, 1)));
 
 		//voorkant
 		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, blue, 1)));
