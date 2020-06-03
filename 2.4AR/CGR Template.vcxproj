@@ -107,13 +107,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\User\Documents\TI jaar 2\periode 4\computervision\opencv\build\include;$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;C:\Users\User\Documents\GitWorkshop\2.4-AR-B1\2.4AR\lib\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\opencv\build\include;$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;C:\Users\User\Documents\GitWorkshop\2.4-AR-B1\2.4AR\lib\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.2\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);C:\Users\User\Documents\TI jaar 2\periode 4\computervision\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world341d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.2\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);D:\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world430d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BackgroundRemover.cpp" />
+    <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="FaceDetector.cpp" />
     <ClCompile Include="FingerCount.cpp" />
     <ClCompile Include="handDetector.cpp" />
@@ -171,9 +172,11 @@
   <ItemGroup>
     <ClInclude Include="3D.h" />
     <ClInclude Include="BackgroundRemover.h" />
+    <ClInclude Include="DataManager.h" />
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FingerCount.h" />
     <ClInclude Include="handDetector.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="SkinDetector.h" />
     <ClInclude Include="tigl.h" />
     <ClInclude Include="VisionManager.h" />

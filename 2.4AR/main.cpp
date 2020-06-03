@@ -7,17 +7,16 @@
 #include "3D.h"
 #include "VisionManager.h"
 #include <thread>
-
-using namespace cv;
-using namespace std;
-
-void facerecognition();
+#include "main.h"
+#include "DataManager.h"
 
 int main(int argc, char* argv[])
 {
-	//thread t1(startup);
-	thread t2(&VisionManager::updater,VisionManager());
-	//t1.join();
+	DataManager dataManager;
+	VisionManager v(&dataManager);
+	
+	startup();
+	std::thread t2(&VisionManager::updater,v);
 	t2.join();
 	return 0;
 }

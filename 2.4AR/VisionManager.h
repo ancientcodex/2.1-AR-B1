@@ -18,6 +18,7 @@
 class VisionManager
 {
 	cv::VideoCapture cam;
+	DataManager dataManager;
 
 	bool calibrated = false;
 	double factor = 0.6;
@@ -31,6 +32,6 @@ class VisionManager
 	FaceDetector faceDetector;
 	handDetector handDetector;
 public:
-	VisionManager();
+	VisionManager(DataManager* dManager);
 	void updater();
 };

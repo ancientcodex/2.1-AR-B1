@@ -5,32 +5,32 @@ BackgroundRemover::BackgroundRemover(void) {
 	calibrated = false;
 }
 
-void BackgroundRemover::calibrate(Mat input) {
-	cvtColor(input, background, COLOR_BGR2GRAY);
+void BackgroundRemover::calibrate(cv::Mat input) {
+	cvtColor(input, background, cv::COLOR_BGR2GRAY);
 	calibrated = true;
 }
 
-Mat BackgroundRemover::getForeground(Mat input) {
-	Mat foregroundMask = getForegroundMask(input);
+cv::Mat BackgroundRemover::getForeground(cv::Mat input) {
+	cv::Mat foregroundMask = getForegroundMask(input);
 	//imshow("foregroundMask", foregroundMask);
-	Mat foreground;
+	cv::Mat foreground;
 	input.copyTo(foreground, foregroundMask);
 	return foreground;
 }
 
-Mat BackgroundRemover::getForegroundMask(Mat input) {
-	Mat foregroundMask;
+cv::Mat BackgroundRemover::getForegroundMask(cv::Mat input) {
+	cv::Mat foregroundMask;
 
 	if (!calibrated) {
-		foregroundMask = Mat::zeros(input.size(), CV_8UC1);
+		foregroundMask = cv::Mat::zeros(input.size(), CV_8UC1);
 		return foregroundMask;
 	}
-	cvtColor(input, foregroundMask, COLOR_BGR2GRAY);
+	cvtColor(input, foregroundMask, cv::COLOR_BGR2GRAY);
 	removeBackground(foregroundMask, background);
 	return foregroundMask;
 }
 
-void BackgroundRemover::removeBackground(Mat input, Mat background) {
+void BackgroundRemover::removeBackground(cv::Mat input, cv::Mat background) {
 	int thresholdOffset = 10;
 
 	for (int i = 0; i < input.rows; i++) {

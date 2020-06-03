@@ -1,6 +1,7 @@
 #include "FaceDetector.h"
 
 using namespace std;
+using namespace cv;
 
 Rect getFaceRect(Mat input);
 

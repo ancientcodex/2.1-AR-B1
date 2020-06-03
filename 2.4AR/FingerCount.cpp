@@ -3,7 +3,8 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 
-
+using namespace cv;
+using namespace std;
 
 #define LIMIT_ANGLE_SUP 60
 #define LIMIT_ANGLE_INF 5
