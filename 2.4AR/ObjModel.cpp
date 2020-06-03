@@ -189,7 +189,7 @@ void ObjModel::draw()
 {
 	for (auto group : groups)
 	{
-		if (materials[group->materialIndex]->texture != nullptr)
+		/*if (materials[group->materialIndex]->texture != nullptr)
 		{
 			materials[group->materialIndex]->texture->bind();
 			tigl::shader->enableTexture(true);
@@ -197,7 +197,7 @@ void ObjModel::draw()
 		else
 		{
 			tigl::shader->enableTexture(false);
-		}
+		}*/
 		tigl::begin(GL_TRIANGLES);
 		for (auto& face : group->faces)
 		{

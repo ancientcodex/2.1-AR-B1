@@ -6,14 +6,17 @@
 #include <iostream>
 
 GLFWwindow* window;
-ObjModel* modelT;
+ObjModel* objmodel;
 int size = 2;
 int cubeXPositions[2];
 int cubeYPositions[2];
 
 void ranPos();
 void cubeCreate(int x, int y);
+void createHands();
 glm::mat4 model = glm::mat4(1.0f);
+glm::mat4 hands = glm::mat4(1.0f);
+
 
 void startup() 
 {
@@ -51,11 +54,13 @@ void init()
     });
     camera = new FpsCam(window);
     objmodel = new ObjModel("data/RiggedHand.obj");
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glEnable(GL_DEPTH_TEST);
 	srand(time(NULL));
 	ranPos();
-	modelT = new ObjModel("models/car/honda_jazz.obj");
+	
+	
 }
 
 float angle = 0.0f;
@@ -100,7 +105,6 @@ void update()
 void draw()
 {
 	int width, height;
-
 	glfwGetWindowSize(window, &width, &height);
 
 	glViewport(0, 0, width, height);
@@ -108,7 +112,8 @@ void draw()
 	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	int viewport[4];
+	int viewport[4];
+
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), width / (float)height, 0.1f, 100.0f);
 	glm::mat4 view = glm::lookAt(glm::vec3(0, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
@@ -120,13 +125,30 @@ void draw()
 	tigl::shader->enableColor(true);
 
 	glEnable(GL_DEPTH_TEST);
-
-	for (int i = 0; i < size; i++)
-	{
-		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
+	
+	createHands();
+	
+	for (int i = 0; i < size; i++)
+	{
+		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
+
+	
 	
 }
+
+void createHands() 
+	{
+		glm::mat4 hands(1.0f);
+		hands = glm::translate(hands, glm::vec3(0, 0, -5));
+		hands = glm::rotate(hands, 0.5f, glm::vec3(0, 1, 1));
+
+		tigl::shader->setModelMatrix(hands);
+		tigl::shader->enableColor(true);
+		tigl::shader->enableTexture(false);
+
+		objmodel->draw();
+	}
 
 
 	void cubeCreate(int x, int y)
@@ -183,10 +205,15 @@ void draw()
 
 	void ranPos()
 	{
-		for (int i = 0; i < size; i++)
-		{
-			cubeXPositions[i] = (rand() % 50) -24;
-			cubeYPositions[i] = (rand() % 30) - 14;
-			std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
+		for (int i = 0; i < size; i++)
+
+		{
+
+			cubeXPositions[i] = (rand() % 50) -24;
+
+			cubeYPositions[i] = (rand() % 30) - 14;
+
+			std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
+
 		}
 	}
