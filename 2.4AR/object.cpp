@@ -6,7 +6,7 @@
 #include <iostream>
 
 GLFWwindow* window;
-ObjModel* modelT;
+ObjModel* objmodel;
 int size = 2;
 int cubeXPositions[2];
 int cubeYPositions[2];
@@ -41,7 +41,7 @@ void startup()
 }
 
 FpsCam* camera;
-
+//INIT METHOD RUN AT START
 void init()
 {
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -55,7 +55,7 @@ void init()
     glEnable(GL_DEPTH_TEST);
 	srand(time(NULL));
 	ranPos();
-	modelT = new ObjModel("models/car/honda_jazz.obj");
+	objmodel = new ObjModel("models/car/honda_jazz.obj");
 }
 
 float angle = 0.0f;
