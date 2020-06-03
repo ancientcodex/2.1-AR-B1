@@ -1,6 +1,3 @@
-#include <opencv2/opencv.hpp>
-#include "opencv2/imgproc/imgproc.hpp" 
-#include "opencv2/highgui/highgui.hpp"
 #include <iostream>
 #include <string>
 #include <GL/glew.h>
@@ -8,35 +5,34 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "tigl.h"
 #include "3D.h"
-#include "BackgroundRemover.h"
-#include "SkinDetector.h"
-#include "FaceDetector.h"
-#include "FingerCount.h"
+#include "VisionManager.h"
 #include <thread>
 
+using namespace cv;
+using namespace std;
 
 void facerecognition();
 
 int main(int argc, char* argv[])
 {
-	std::thread t1(startup);
-	//thread t2(facerecognition);
-	t1.join();
-	//t2.join();
+	//thread t1(startup);
+	thread t2(&VisionManager::updater,VisionManager());
+	//t1.join();
+	t2.join();
 	return 0;
 }
 
 void facerecognition() {
 
-	cv::VideoCapture cam("http://192.168.1.27:4747/mjpegfeed");
-	cam.set(cv::CAP_PROP_SETTINGS, 1);
+	VideoCapture cam("http://192.168.1.27:4747/mjpegfeed");
+	cam.set(CAP_PROP_SETTINGS, 1);
 
 	if (!cam.isOpened()) {
-		std::cout << "Can't find camera!" << std::endl;
+		cout << "Can't find camera!" << endl;
 		return ;
 	}
 
-	cv::Mat frame, frameOut, handMask, foreground, fingerCountDebug;
+	Mat frame, frameOut, handMask, foreground, fingerCountDebug;
 
 	BackgroundRemover backgroundRemover;
 	SkinDetector skinDetector;
@@ -62,7 +58,7 @@ void facerecognition() {
 		imshow("handMask", handMask);
 		imshow("handDetection", fingerCountDebug);
 
-		int key = cv::waitKey(1);
+		int key = waitKey(1);
 
 		if (key == 27) // esc
 			break;

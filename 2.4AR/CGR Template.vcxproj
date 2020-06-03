@@ -161,21 +161,22 @@
     <ClCompile Include="BackgroundRemover.cpp" />
     <ClCompile Include="FaceDetector.cpp" />
     <ClCompile Include="FingerCount.cpp" />
+    <ClCompile Include="handDetector.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SkinDetector.cpp" />
     <ClCompile Include="tigl.cpp" />
+    <ClCompile Include="VisionManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3D.h" />
     <ClInclude Include="BackgroundRemover.h" />
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FingerCount.h" />
+    <ClInclude Include="handDetector.h" />
     <ClInclude Include="SkinDetector.h" />
     <ClInclude Include="tigl.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="haarcascade_frontalface_alt.xml" />
+    <ClInclude Include="VisionManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Object Include="x64\Debug\person_figure.obj" />
