@@ -115,7 +115,8 @@ void draw()
 	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	int viewport[4];
+	int viewport[4];
+
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), width / (float)height, 0.1f, 100.0f);
 	glm::mat4 view = glm::lookAt(glm::vec3(0, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
@@ -210,7 +211,8 @@ void draw()
 
 	void ranPos()
 	{
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < size; i++)
+
 		{
 			int clr = (rand() % 2);
 			red = 255;

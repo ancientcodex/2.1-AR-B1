@@ -107,7 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\opencv\build\include;$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;C:\Users\User\Documents\GitWorkshop\2.4-AR-B1\2.4AR\lib\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\opencv\build\include;$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,6 +162,7 @@
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="FaceDetector.cpp" />
     <ClCompile Include="FingerCount.cpp" />
+    <ClCompile Include="FpsCam.cpp" />
     <ClCompile Include="handDetector.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="main.cpp" />
@@ -177,8 +178,11 @@
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FingerCount.h" />
+    <ClInclude Include="FpsCam.h" />
     <ClInclude Include="handDetector.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="ObjModel.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SkinDetector.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
