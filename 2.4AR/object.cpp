@@ -88,18 +88,6 @@ void update()
 {
     camera->update(window);
 
-    if (red >= 1.0f) 
-    {
-        red = 0.01f;
-    }
-    if (blue >= 1.0f)
-    {
-        blue = 0.01f;
-    }
-    if (green >= 1.0f)
-    {
-        green = 0.01f;
-    }
 	if (pos >= 15.0f)
 	{
 		pos = 0.0f;
@@ -109,9 +97,6 @@ void update()
     speed += 0.02f;
     pos += 0.01f;
     
-    red += 0.00011f;
-    blue += 0.00023f;
-    green += 0.00037f;
 }
 
 void draw()
@@ -164,6 +149,8 @@ void draw()
 
 	void cubeCreate(int x, int y)
 	{
+		
+		
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(x, y, -40));
 
@@ -177,41 +164,41 @@ void draw()
 
 		tigl::begin(GL_QUADS);
 
+
 		//achterkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(255, 0, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(255, 0, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(255, 0, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(255, 0, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, 0, 1)));
 
 		//voorkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(blue, blue, red, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(green, red, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, blue, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, 0, 1)));
 
 		//onderkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, blue, green, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(green, red, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(green, green, red, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, 0, 1)));
 
 		//bovenkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(green, red, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, blue, green, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(blue, green, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, blue, green, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, 0, 1)));
 
 		//rechterkant
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(blue, green, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, green, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(green, red, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, red, 1)));
-
+		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, 0, 1)));
 		//linkerkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(blue, blue, red, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(green, red, blue, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, 0, 1)));
+		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, 0, 1)));
 
 		tigl::end();
 	}
@@ -220,6 +207,19 @@ void draw()
 	{
 		for (int i = 0; i < size; i++)
 		{
+			int clr = (rand() % 2);
+			red = 255;
+		    green = 255;
+			if (clr == 1)
+			{
+				red = 255;
+				green = 0;
+			}
+			else if (clr == 2)
+			{
+				red = 0;
+				green = 255;
+			}
 		cubeXPositions[i] = (rand() % 50) -24;
 		cubeYPositions[i] = (rand() % 30) - 14;
 		std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
