@@ -50,6 +50,7 @@ void init()
             glfwSetWindowShouldClose(window, true);
     });
     camera = new FpsCam(window);
+    objmodel = new ObjModel("data/RiggedHand.obj");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glEnable(GL_DEPTH_TEST);
 	srand(time(NULL));
@@ -107,7 +108,7 @@ void draw()
 	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	int viewport[4];
+	int viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), width / (float)height, 0.1f, 100.0f);
 	glm::mat4 view = glm::lookAt(glm::vec3(0, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
@@ -120,9 +121,9 @@ void draw()
 
 	glEnable(GL_DEPTH_TEST);
 
-	for (int i = 0; i < size; i++)
-	{
-		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
+	for (int i = 0; i < size; i++)
+	{
+		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
 	
 }
@@ -182,10 +183,10 @@ void draw()
 
 	void ranPos()
 	{
-		for (int i = 0; i < size; i++)
-		{
-			cubeXPositions[i] = (rand() % 50) -24;
-			cubeYPositions[i] = (rand() % 30) - 14;
-			std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
+		for (int i = 0; i < size; i++)
+		{
+			cubeXPositions[i] = (rand() % 50) -24;
+			cubeYPositions[i] = (rand() % 30) - 14;
+			std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
 		}
 	}
