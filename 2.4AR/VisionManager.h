@@ -13,12 +13,13 @@
 #include "handDetector.h"
 
 #include <iostream>
+#include "DataManager.h"
 
 
 class VisionManager
 {
 	cv::VideoCapture cam;
-	DataManager dataManager;
+	std::shared_ptr<DataManager> dataManager;
 
 	bool calibrated = false;
 	double factor = 0.6;
@@ -32,6 +33,6 @@ class VisionManager
 	FaceDetector faceDetector;
 	handDetector handDetector;
 public:
-	VisionManager(DataManager* dManager);
+	VisionManager(std::shared_ptr<DataManager> dManager);
 	void updater();
 };

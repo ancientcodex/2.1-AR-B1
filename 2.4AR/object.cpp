@@ -1,11 +1,13 @@
 #include "3D.h"
 
 GLFWwindow* window;
+std::shared_ptr<DataManager> dataManager;
 
 
-
-void startup() 
+void startup(std::shared_ptr<DataManager> dManager)
 {
+    dataManager = std::make_shared<DataManager>(*dManager);
+
     if (!glfwInit())
         throw "Could not initialize glwf";
     window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
@@ -23,6 +25,12 @@ void startup()
     {
         update();
         draw();
+
+        std::tuple<std::string, cv::Point> t = dManager->getPoint();
+        std::string s = std::get<0>(t);
+        cv::Point p = std::get<1>(t);
+        std::cout << s << " center: x: " << p.x << " y: " << p.y << std::endl;
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

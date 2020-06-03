@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "DataManager.h"
 
 using tigl::Vertex;
 
@@ -11,7 +12,7 @@ using tigl::Vertex;
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "opengl32.lib")
 
-void startup();
+void startup(std::shared_ptr<DataManager> dManager);
 void init();
 void update();
 void draw();

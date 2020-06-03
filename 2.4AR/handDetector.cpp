@@ -22,6 +22,7 @@ cv::Mat handDetector::detectHands(cv::Mat input)
 	cv::findContours(threshold_output, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
 	/// Find the convex hull object for each contour
 	std::vector<std::vector<cv::Point> >hull(contours.size());
+	//foreach
 	for (int i = 0; i < contours.size(); i++)
 	{
 		convexHull(cv::Mat(contours[i]), hull[i], false);

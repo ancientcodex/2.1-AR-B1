@@ -13,10 +13,9 @@
 int main(int argc, char* argv[])
 {
 	DataManager dataManager;
-	VisionManager v(&dataManager);
-	
-	startup();
-	std::thread t2(&VisionManager::updater,v);
+	shared_ptr<DataManager> ptr = std::make_shared<DataManager>(dataManager);
+	std::thread t2(&VisionManager::updater, VisionManager(ptr));
+	startup(ptr);
 	t2.join();
 	return 0;
 }

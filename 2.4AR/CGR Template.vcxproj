@@ -181,12 +181,6 @@
     <ClInclude Include="tigl.h" />
     <ClInclude Include="VisionManager.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="x64\Debug\person_figure.obj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="x64\Debug\person_figure.mtl" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\glfw.3.3.2\build\native\glfw.targets" Condition="Exists('packages\glfw.3.3.2\build\native\glfw.targets')" />

@@ -1,9 +1,8 @@
 #include "VisionManager.h"
-#include "DataManager.h"
 
-VisionManager::VisionManager(DataManager* dManager) {
+VisionManager::VisionManager(std::shared_ptr<DataManager> dManager) {
 
-	dataManager = *dManager;
+	dataManager = dManager;
 	cam = cv::VideoCapture("http://192.168.1.28:4747/mjpegfeed?640x480");
 	cam.set(cv::CAP_PROP_SETTINGS, 1);
 
@@ -37,14 +36,14 @@ void VisionManager::updater() {
 		//Left Hand
 		handleft = handDetector.detectHands(handmaskL);
 		HandL = handDetector.getCenter();
-		dataManager.addPoint("handL", HandL);
-		std::cout << "center: x: " << HandL.x << " y: " << HandL.y << std::endl;
+		dataManager->addPoint("handL", HandL);
+		//std::cout << "Hand L center: x: " << HandL.x << " y: " << HandL.y << std::endl;
 
 		//Right Hand
 		handright = handDetector.detectHands(handmaskR);
 		HandR = handDetector.getCenter();
-		dataManager.addPoint("handR", HandR);
-		std::cout << "center: x: " << HandR.x << " y: " << HandR.y << std::endl;
+		dataManager->addPoint("handR", HandR);
+		//std::cout << "Hand R center: x: " << HandR.x << " y: " << HandR.y << std::endl;
 
 		cv::imshow("foreground", foreground);
 		cv::imshow("handMask", handMask);
