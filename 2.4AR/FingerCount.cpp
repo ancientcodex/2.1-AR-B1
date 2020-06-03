@@ -3,9 +3,8 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 
-/*
- Author: Nicolò Castellazzi https://github.com/nicast
-*/
+using namespace cv;
+using namespace std;
 
 #define LIMIT_ANGLE_SUP 60
 #define LIMIT_ANGLE_INF 5

@@ -1,15 +1,17 @@
 #include "FaceDetector.h"
-#include"opencv2\opencv.hpp"
+
+using namespace std;
+using namespace cv;
 
 Rect getFaceRect(Mat input);
 
-String faceClassifierFileName = "C:\\Users\\tjall\\Desktop\\2.4AR\\2.1 AR B1\\2.4_AR_B1\\haarcascade_frontalface_alt.xml";
+String faceClassifierFileName = "res/haarcascade_frontalface_alt.xml";
 CascadeClassifier faceCascadeClassifier;
 
 FaceDetector::FaceDetector(void) {
 	if (!faceCascadeClassifier.load(faceClassifierFileName));
+	cout << "can't open file: " << faceClassifierFileName << endl;
 	//throw runtime_error("can't load file " + faceClassifierFileName);
-	cout << """ can't load file " << faceClassifierFileName << endl;
 }
 
 void FaceDetector::removeFaces(Mat input, Mat output) {

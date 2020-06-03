@@ -13,15 +13,14 @@ int size = 2;
 int cubeXPositions[2];
 int cubeYPositions[2];
 
+void startup(std::shared_ptr<DataManager> dManager)
+{
 void ranPos();
 void cubeCreate(int x, int y);
 void createBackground();
 
 glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 background = glm::mat4(1.0f);
-
-void startup() 
-{
     if (!glfwInit())
         throw "Could not initialize glwf";
     window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
@@ -39,6 +38,12 @@ void startup()
     {
         update();
         draw();
+
+        std::tuple<std::string, cv::Point> t = dManager->getPoint();
+        std::string s = std::get<0>(t);
+        cv::Point p = std::get<1>(t);
+        std::cout << s << " center: x: " << p.x << " y: " << p.y << std::endl;
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
