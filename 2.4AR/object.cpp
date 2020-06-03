@@ -6,7 +6,7 @@
 #include <iostream>
 
 GLFWwindow* window;
-ObjModel* modelT;
+ObjModel* objmodel;
 GLuint textureId = -1;
 
 int size = 2;
@@ -16,6 +16,7 @@ int cubeYPositions[2];
 void ranPos();
 void cubeCreate(int x, int y);
 void createBackground();
+
 glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 background = glm::mat4(1.0f);
 
@@ -54,11 +55,12 @@ void init()
             glfwSetWindowShouldClose(window, true);
     });
     camera = new FpsCam(window);
+    objmodel = new ObjModel("data/RiggedHand.obj");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glEnable(GL_DEPTH_TEST);
 	srand(time(NULL));
 	ranPos();
-	modelT = new ObjModel("models/car/honda_jazz.obj");
+	objmodel = new ObjModel("models/car/honda_jazz.obj");
 
 	glGenTextures(1, &textureId);
 	glBindTexture(GL_TEXTURE_2D, textureId);
@@ -123,7 +125,7 @@ void draw()
 	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	int viewport[4];
+	int viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), width / (float)height, 0.1f, 100.0f);
 	glm::mat4 view = glm::lookAt(glm::vec3(0, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
@@ -138,32 +140,32 @@ void draw()
 	for (int i = 0; i < size; i++)
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
-	}	
+	}
 }
 
-	void createBackground() 
+	void createBackground()
 	{
-		glm::mat4 background = glm::mat4(1.0f);
-		background = glm::translate(background, glm::vec3(0, 0, -50));
+	glm::mat4 background = glm::mat4(1.0f);
+	background = glm::translate(background, glm::vec3(0, 0, -50));
 
-		tigl::shader->setModelMatrix(background);
-		tigl::shader->enableColor(false);
-		tigl::shader->enableTexture(true);
+	tigl::shader->setModelMatrix(background);
+	tigl::shader->enableColor(false);
+	tigl::shader->enableTexture(true);
 
-		tigl::begin(GL_QUADS);
-	
-		tigl::addVertex(Vertex::PC(glm::vec3(-10, 10, 10), glm::vec4(red, blue, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(10, 10, 10), glm::vec4(blue, green, red, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(10, -10, 10), glm::vec4(red, green, blue, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-10, -10, 10), glm::vec4(green, green, blue, 1)));
+	tigl::begin(GL_QUADS);
 
-		tigl::end();
+	tigl::addVertex(Vertex::PC(glm::vec3(-100, 100, 0), glm::vec4(red, blue, blue, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(100, 100, 0), glm::vec4(blue, green, red, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(100, -100, 0), glm::vec4(red, green, blue, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(-100, -100, 0), glm::vec4(green, green, blue, 1)));
+
+	tigl::end();
 	}
 
 	void cubeCreate(int x, int y)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(x, y, -30));
+		model = glm::translate(model, glm::vec3(x, y, -40));
 
 		//(x-as, y-as, z-as) (left/right, up/down, front/back)
 		model = glm::translate(model, glm::vec3(0, 0, pos));
@@ -216,10 +218,10 @@ void draw()
 
 	void ranPos()
 	{
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < size; i++)
 		{
-			cubeXPositions[i] = (rand() % 50) -24;
-			cubeYPositions[i] = (rand() % 30) - 14;
-			std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
+		cubeXPositions[i] = (rand() % 50) -24;
+		cubeYPositions[i] = (rand() % 30) - 14;
+		std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
 		}
 	}
