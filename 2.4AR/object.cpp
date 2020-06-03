@@ -46,7 +46,7 @@ void startup()
 }
 
 FpsCam* camera;
-
+//INIT METHOD RUN AT START
 void init()
 {
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
