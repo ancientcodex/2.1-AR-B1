@@ -2,11 +2,11 @@
 
 VisionManager::VisionManager() {
 
-	cam = VideoCapture("http://192.168.1.28:4747/mjpegfeed?640x480");
-	cam.set(CAP_PROP_SETTINGS, 1);
+	cam = cv::VideoCapture("http://192.168.1.28:4747/mjpegfeed?640x480");
+	cam.set(cv::CAP_PROP_SETTINGS, 1);
 
 	if (!cam.isOpened()) {
-		cout << "Can't find camera!" << endl;
+		std::cout << "Can't find camera!" << std::endl;
 		return;
 	}
 }
@@ -16,7 +16,7 @@ void VisionManager::updater() {
 
 	while (true) {
 		cam >> frame;
-		cv::resize(frame, frame, Size(), factor, factor, INTER_AREA);
+		cv::resize(frame, frame, cv::Size(), factor, factor, cv::INTER_AREA);
 		frameOut = frame.clone();
 
 		if (!calibrated)
@@ -29,18 +29,18 @@ void VisionManager::updater() {
 		}
 
 		// split frame in 2 sides
-		cv::Mat handmaskL(handMask, Rect(0, 0, handMask.rows * factor, handMask.cols * factor));
-		cv::Mat handmaskR(handMask, Rect(handMask.rows * factor, 0, handMask.rows * factor, handMask.cols * factor));
+		cv::Mat handmaskL(handMask, cv::Rect(0, 0, handMask.rows * factor, handMask.cols * factor));
+		cv::Mat handmaskR(handMask, cv::Rect(handMask.rows * factor, 0, handMask.rows * factor, handMask.cols * factor));
 
 		//Left Hand
 		handleft = handDetector.detectHands(handmaskL);
 		HandL = handDetector.getCenter();
-		std::cout << "center: x: " << HandL.x << " y: " << HandL.y << endl;
+		std::cout << "center: x: " << HandL.x << " y: " << HandL.y << std::endl;
 
 		//Right Hand
 		handright = handDetector.detectHands(handmaskR);
 		HandR = handDetector.getCenter();
-		std::cout << "center: x: " << HandR.x << " y: " << HandR.y << endl;
+		std::cout << "center: x: " << HandR.x << " y: " << HandR.y << std::endl;
 
 		cv::imshow("foreground", foreground);
 		cv::imshow("handMask", handMask);
@@ -49,7 +49,7 @@ void VisionManager::updater() {
 		cv::imshow("handleft", handleft);
 		cv::imshow("handright", handright);
 
-		int key = waitKey(1);
+		int key = cv::waitKey(1);
 		if (key == 27) // esc
 			break;
 		else if (key == 115) {// s
