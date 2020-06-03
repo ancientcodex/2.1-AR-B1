@@ -164,7 +164,9 @@
     <ClCompile Include="FpsCam.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="SkinDetector.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,7 +175,10 @@
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FingerCount.h" />
     <ClInclude Include="FpsCam.h" />
+    <ClInclude Include="ObjModel.h" />
     <ClInclude Include="SkinDetector.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
   <ItemGroup>
