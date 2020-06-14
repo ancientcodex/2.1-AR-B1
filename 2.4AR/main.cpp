@@ -14,8 +14,7 @@
 #include "FingerCount.h"
 #include <thread>
 
-using namespace cv;
-using namespace std;
+
 using tigl::Vertex;
 
 void facerecognition();
