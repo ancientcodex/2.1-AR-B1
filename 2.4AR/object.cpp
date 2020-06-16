@@ -4,9 +4,11 @@
 #include "ObjModel.h"
 #include <array>
 #include <iostream>
+#include "textOutput.h"
 
 GLFWwindow* window;
 ObjModel* modelT;
+textOutput mainText;
 int size = 2;
 int cubeXPositions[2];
 int cubeYPositions[2];
@@ -55,6 +57,9 @@ void init()
 	srand(time(NULL));
 	ranPos();
 	modelT = new ObjModel("models/car/honda_jazz.obj");
+	
+	//Init to draw texts
+	mainText.init();
 }
 
 float angle = 0.0f;
@@ -124,7 +129,9 @@ void draw()
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
-	
+	//Draw text
+	mainText.draw("Dit is een andere test", 0, 32);
+	mainText.draw("Dit is een test", 0, 32);
 }
 
 
@@ -189,3 +196,4 @@ void draw()
 			std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
 		}
 	}
+

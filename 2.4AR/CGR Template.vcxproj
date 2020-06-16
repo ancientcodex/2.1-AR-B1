@@ -166,6 +166,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="SkinDetector.cpp" />
+    <ClCompile Include="stb_truetype.cpp" />
+    <ClCompile Include="textOutput.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
   </ItemGroup>
@@ -178,6 +180,8 @@
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="SkinDetector.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stb_truetype.h" />
+    <ClInclude Include="textOutput.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
