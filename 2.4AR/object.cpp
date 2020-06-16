@@ -93,7 +93,7 @@ void init()
 
 	//set status boolean
 	gameOnPause = false;
-	gameIsFinished = true;
+	gameIsFinished = false;
 	
 	//Init to draw texts
 	mainText.init();
