@@ -5,6 +5,7 @@
 #include <array>
 #include <iostream>
 #include "textOutput.h"
+#include "Player.h"
 
 GLFWwindow* window;
 ObjModel* modelT;
@@ -15,9 +16,12 @@ int cubeYPositions[2];
 
 void ranPos();
 void cubeCreate(int x, int y);
+void writeTextAction();
+void writePlayerScoreList();
 glm::mat4 model = glm::mat4(1.0f);
 
 bool gameOnPause;
+bool gameIsFinished;
 
 void startup() 
 {
@@ -72,10 +76,25 @@ void init()
 	srand(time(NULL));
 	ranPos();
 	modelT = new ObjModel("models/car/honda_jazz.obj");
+
+	//set status boolean
 	gameOnPause = false;
+	gameIsFinished = false;
 	
 	//Init to draw texts
 	mainText.init();
+
+	//TODO: Dit moet weg hier
+	if (gameIsFinished)
+	{	
+		std::string name;
+		//effe wachten, zodat het daadwerkelijk gelezen kan worden of tegelijk uitvoeren
+		std::cout << "fill in name: " << std::endl;
+		std::cin >> name;
+		//fill in right value of points
+		Player player(name, 1);
+		gameIsFinished = false;
+	}
 }
 
 float angle = 0.0f;
@@ -145,15 +164,9 @@ void draw()
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
-	//Draw text
-	if(gameOnPause)
-	{
-		mainText.draw("Press 'S' to start", 0, 32);
-	}
-	else 
-	{
-		mainText.draw("Press 'P' to pause", 0, 32);
-	}
+
+	writeTextAction();
+	
 }
 
 
@@ -219,3 +232,29 @@ void draw()
 		}
 	}
 
+	void writeTextAction()
+	{
+		//Juiste tekst aan de hand van de status
+		if (gameIsFinished)
+		{
+			mainText.draw("Fill name in console", 0, 32);
+
+
+		}
+		else
+		{
+			if (gameOnPause)
+			{
+				mainText.draw("Press 'S' to start", 0, 32);
+			}
+			else
+			{
+				mainText.draw("Press 'P' to pause", 0, 32);
+			}
+		}
+	}
+
+	void writePlayerScoreList()
+	{
+		//loop to print top 10 players
+	}

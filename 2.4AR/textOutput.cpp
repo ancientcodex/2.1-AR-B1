@@ -15,7 +15,7 @@ void textOutput::init()
 	//leest 2^20 data van bestand
 	fread(ttf_buffer, 1, 1 << 20, fopen("c:/windows/fonts/times.ttf", "rb"));
 	//texture data genereren
-	stbtt_BakeFontBitmap(ttf_buffer, 0, 32.0, temp_bitmap, 512, 512, 32, 96, cdata); // no guarantee this fits! //ctlr/shift/spatie
+	stbtt_BakeFontBitmap(ttf_buffer, 0, 32.0, temp_bitmap, 512, 512, 32, 96, cdata); // no guarantee this fits!
 	//texture aanmaken
 	glGenTextures(1, &texId);
 	//texture binden
