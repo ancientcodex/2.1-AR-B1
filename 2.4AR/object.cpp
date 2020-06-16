@@ -6,6 +6,8 @@
 #include <iostream>
 #include "textOutput.h"
 #include "Player.h"
+#include <fstream>
+#include <iostream> 
 
 GLFWwindow* window;
 ObjModel* modelT;
@@ -19,7 +21,7 @@ void cubeCreate(int x, int y);
 void writeTextAction();
 void writePlayerScoreList();
 glm::mat4 model = glm::mat4(1.0f);
-
+std::list<std::string> players;
 bool gameOnPause;
 bool gameIsFinished;
 
@@ -77,23 +79,54 @@ void init()
 	ranPos();
 	modelT = new ObjModel("models/car/honda_jazz.obj");
 
+	std::ifstream input("gamesplayer.txt");
+	if (input.fail())
+	{
+		std::cout << "File could not be opened" << std::endl;
+		return;
+	}
+	std::string info;
+	while (std::getline(input, info))
+	{
+		players.push_front(info);
+	}
+
 	//set status boolean
 	gameOnPause = false;
-	gameIsFinished = false;
+	gameIsFinished = true;
 	
 	//Init to draw texts
 	mainText.init();
 
-	//TODO: Dit moet weg hier
+	//TODO: Diffrent place will help openGL to run better
 	if (gameIsFinished)
 	{	
+		//get name
 		std::string name;
-		//effe wachten, zodat het daadwerkelijk gelezen kan worden of tegelijk uitvoeren
-		std::cout << "fill in name: " << std::endl;
+		std::cout << "fill in name: (max 8 characters)" << std::endl;
 		std::cin >> name;
-		//fill in right value of points
-		Player player(name, 1);
-		gameIsFinished = false;
+		int sizeName = name.size();
+		if (sizeName > 8) 
+		{
+			std::cout << "fill in name: (max 8 characters)" << std::endl;
+			std::cin >> name;
+			int sizeName = name.size();
+		}
+		else
+		{
+			//fill in right value of points for player
+			Player player(name, 1);
+			std::string t = player.toString();
+			players.push_front(t);
+
+			//safe player to txt
+			std::ofstream output("gamesplayer.txt", std::ios_base::app);
+			output << t << std::endl;
+			std::cout << "play saved" << std::endl;
+			output.close();
+
+			gameIsFinished = false;
+		}
 	}
 }
 
@@ -166,7 +199,7 @@ void draw()
 	}
 
 	writeTextAction();
-	
+	writePlayerScoreList();
 }
 
 
@@ -234,27 +267,26 @@ void draw()
 
 	void writeTextAction()
 	{
-		//Juiste tekst aan de hand van de status
-		if (gameIsFinished)
+		//Get fitting text for status of the game
+	
+		if (gameOnPause)
 		{
-			mainText.draw("Fill name in console", 0, 32);
-
-
+			mainText.draw("Press 'S' to start", 0, 32);
 		}
 		else
 		{
-			if (gameOnPause)
-			{
-				mainText.draw("Press 'S' to start", 0, 32);
-			}
-			else
-			{
-				mainText.draw("Press 'P' to pause", 0, 32);
-			}
+			mainText.draw("Press 'P' to pause", 0, 32);
 		}
+	
 	}
 
 	void writePlayerScoreList()
 	{
-		//loop to print top 10 players
+		std::list<std::string>::iterator it;
+		int  i = 32;
+		for (it = players.begin(); it != players.end(); ++it)
+		{
+			mainText.draw(*it, 1100, i);
+			i += 32;
+		}
 	}
