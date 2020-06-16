@@ -17,6 +17,8 @@ void ranPos();
 void cubeCreate(int x, int y);
 glm::mat4 model = glm::mat4(1.0f);
 
+bool gameOnPause;
+
 void startup() 
 {
     if (!glfwInit())
@@ -50,6 +52,19 @@ void init()
     {
         if (key == GLFW_KEY_ESCAPE)
             glfwSetWindowShouldClose(window, true);
+
+		if (key == GLFW_KEY_P)
+		{
+			//TODO: game pause method
+			gameOnPause = true;
+
+		}
+
+		if (key == GLFW_KEY_S)
+		{
+			//TODO: game start method
+			gameOnPause = false;
+		}
     });
     camera = new FpsCam(window);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -57,6 +72,7 @@ void init()
 	srand(time(NULL));
 	ranPos();
 	modelT = new ObjModel("models/car/honda_jazz.obj");
+	gameOnPause = false;
 	
 	//Init to draw texts
 	mainText.init();
@@ -130,8 +146,14 @@ void draw()
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
 	//Draw text
-	mainText.draw("Dit is een andere test", 0, 32);
-	mainText.draw("Dit is een test", 0, 32);
+	if(gameOnPause)
+	{
+		mainText.draw("Press 'S' to start", 0, 32);
+	}
+	else 
+	{
+		mainText.draw("Press 'P' to pause", 0, 32);
+	}
 }
 
 
