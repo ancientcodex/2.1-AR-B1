@@ -9,7 +9,10 @@
 #include <fstream>
 #include <iostream> 
 
+
 int size = 2;
+int margin = 0.5;
+int roundcount = 0;
 int cubeXPositions[2];
 int cubeYPositions[2];
 
@@ -35,7 +38,7 @@ void startup(std::shared_ptr<DataManager> dManager)
 {
 	if (!glfwInit())
 		throw "Could not initialize glwf";
-	window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
+	window = glfwCreateWindow(1400, 800, "Game", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -49,10 +52,15 @@ void startup(std::shared_ptr<DataManager> dManager)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		update();
-		draw();
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		while (!gameOnPause)
+		{
+			update();
+			std::tuple<std::string, cv::Point> t = dManager->getPoint();
+
+			draw();
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+		}	
 	}
 	glfwTerminate();
 }
@@ -147,8 +155,6 @@ float blue = 0.0f;
 float green = 0.0f;
 float pos = 0.0f;
 
-
-
 void update()
 {
 	camera->update(window);
@@ -184,25 +190,60 @@ void draw()
 
 	glEnable(GL_DEPTH_TEST);
 
+	cv::Point left, right;
+
 	std::tuple<std::string, cv::Point> temp;
 
 	temp = dataManager->getPoint();
 	createLeftHand(temp);
 	createRightHand(temp);
+	left = std::get<1>(temp);
 	temp = dataManager->getPoint();
 	createLeftHand(temp);
 	createRightHand(temp);
+	right = std::get<1>(temp);
 
-
+	red = 0;
+	green = 255;
 	for (int i = 0; i < size; i++)
 	{
-		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
+		if (green == 255)
+		{
+			red = 255;
+			green = 0;
+		}
+		else if (red == 255)
+		{
+			green = 255;
+			red = 0;
+		}
+		
+		double handLposx, handLposy, handRposx, handRposy;
+		handLposx = (left.x / 100);
+		handLposy = (left.y / 100);
+		handRposx = (right.x / 100);
+		handRposy = (right.y / 100);
+
+		if (cubeXPositions[i] <= (handLposx- margin) && cubeXPositions[i] >= (handLposx + margin) && cubeYPositions[i] <= (handLposy - margin) && cubeYPositions[i] >= (handLposy + margin))
+		{
+			pos = 0.0f;
+		}
+		else if (cubeXPositions[i] <= (handRposx - margin) && cubeXPositions[i] >= (handRposx + margin ) && cubeYPositions[i] <= (handRposy - margin) && cubeYPositions[i] >= (handRposy + margin))
+		{
+			pos = 0.0f;
+		}
+		else
+		{
+			cubeCreate(cubeXPositions[i], cubeYPositions[i]);
+		}
+		
 	}
 
 	for (int i = 0; i < size; i++)
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
+	roundcount++;
 
 	writeTextAction();
 	writePlayerScoreList();
@@ -340,21 +381,7 @@ void cubeCreate(int x, int y)
 void ranPos()
 {
 	for (int i = 0; i < size; i++)
-
 	{
-		int clr = (rand() % 2);
-		red = 255;
-		green = 255;
-		if (clr == 1)
-		{
-			red = 255;
-			green = 0;
-		}
-		else if (clr == 2)
-		{
-			red = 0;
-			green = 255;
-		}
 		cubeXPositions[i] = (rand() % 50) - 24;
 		cubeYPositions[i] = (rand() % 30) - 14;
 		std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
