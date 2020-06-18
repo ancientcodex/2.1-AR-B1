@@ -49,13 +49,15 @@ void startup(std::shared_ptr<DataManager> dManager)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		update();
-		std::tuple<std::string, cv::Point> t = dManager->getPoint();
+		while (!gameOnPause)
+		{
+			update();
+			std::tuple<std::string, cv::Point> t = dManager->getPoint();
 
-
-		draw();
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+			draw();
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+		}	
 	}
 	glfwTerminate();
 }
