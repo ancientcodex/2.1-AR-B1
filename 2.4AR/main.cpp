@@ -10,6 +10,11 @@
 #include "main.h"
 #include "DataManager.h"
 
+
+using tigl::Vertex;
+
+void facerecognition();
+
 int main(int argc, char* argv[])
 {
 	DataManager dataManager;

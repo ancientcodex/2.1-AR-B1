@@ -4,8 +4,14 @@
 #include "ObjModel.h"
 #include <array>
 #include <iostream>
+#include "textOutput.h"
+#include "Player.h"
+#include <fstream>
+#include <iostream> 
 
 GLFWwindow* window;
+ObjModel* modelT;
+textOutput mainText;
 ObjModel* objmodel;
 GLuint textureId = -1;
 
@@ -17,10 +23,15 @@ void startup(std::shared_ptr<DataManager> dManager)
 {
 void ranPos();
 void cubeCreate(int x, int y);
+void writeTextAction();
+void writePlayerScoreList();
 void createBackground();
 
 glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 background = glm::mat4(1.0f);
+bool gameIsFinished;
+bool gameOnPause;
+std::list<std::string> players;
     if (!glfwInit())
         throw "Could not initialize glwf";
     window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
@@ -58,6 +69,19 @@ void init()
     {
         if (key == GLFW_KEY_ESCAPE)
             glfwSetWindowShouldClose(window, true);
+
+		if (key == GLFW_KEY_P)
+		{
+			//TODO: game pause method
+			gameOnPause = true;
+
+		}
+
+		if (key == GLFW_KEY_S)
+		{
+			//TODO: game start method
+			gameOnPause = false;
+		}
     });
     camera = new FpsCam(window);
     objmodel = new ObjModel("data/RiggedHand.obj");
@@ -65,6 +89,57 @@ void init()
     glEnable(GL_DEPTH_TEST);
 	srand(time(NULL));
 	ranPos();
+	modelT = new ObjModel("models/car/honda_jazz.obj");
+
+	std::ifstream input("gamesplayer.txt");
+	if (input.fail())
+	{
+		std::cout << "File could not be opened" << std::endl;
+		return;
+	}
+	std::string info;
+	while (std::getline(input, info))
+	{
+		players.push_front(info);
+	}
+
+	//set status boolean
+	gameOnPause = false;
+	gameIsFinished = false;
+	
+	//Init to draw texts
+	mainText.init();
+
+	//TODO: Diffrent place will help openGL to run better
+	if (gameIsFinished)
+	{	
+		//get name
+		std::string name;
+		std::cout << "fill in name: (max 8 characters)" << std::endl;
+		std::cin >> name;
+		int sizeName = name.size();
+		if (sizeName > 8) 
+		{
+			std::cout << "fill in name: (max 8 characters)" << std::endl;
+			std::cin >> name;
+			int sizeName = name.size();
+		}
+		else
+		{
+			//fill in right value of points for player
+			Player player(name, 1);
+			std::string t = player.toString();
+			players.push_front(t);
+
+			//safe player to txt
+			std::ofstream output("gamesplayer.txt", std::ios_base::app);
+			output << t << std::endl;
+			std::cout << "play saved" << std::endl;
+			output.close();
+
+			gameIsFinished = false;
+		}
+	}
 	objmodel = new ObjModel("models/car/honda_jazz.obj");
 
 	glGenTextures(1, &textureId);
@@ -116,7 +191,6 @@ void draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	int viewport[4];
-
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), width / (float)height, 0.1f, 100.0f);
 	glm::mat4 view = glm::lookAt(glm::vec3(0, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
@@ -126,12 +200,13 @@ void draw()
 
 	glEnable(GL_DEPTH_TEST);
 
-	createBackground();
-
 	for (int i = 0; i < size; i++)
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
+
+	writeTextAction();
+	writePlayerScoreList();
 }
 
 	void createBackground()
@@ -230,5 +305,31 @@ void draw()
 		cubeXPositions[i] = (rand() % 50) -24;
 		cubeYPositions[i] = (rand() % 30) - 14;
 		std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
+		}
+	}
+
+	void writeTextAction()
+	{
+		//Get fitting text for status of the game
+	
+		if (gameOnPause)
+		{
+			mainText.draw("Press 'S' to start", 0, 32);
+		}
+		else
+		{
+			mainText.draw("Press 'P' to pause", 0, 32);
+		}
+	
+	}
+
+	void writePlayerScoreList()
+	{
+		std::list<std::string>::iterator it;
+		int  i = 32;
+		for (it = players.begin(); it != players.end(); ++it)
+		{
+			mainText.draw(*it, 1100, i);
+			i += 32;
 		}
 	}
