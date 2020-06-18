@@ -150,8 +150,6 @@ float blue = 0.0f;
 float green = 0.0f;
 float pos = 0.0f;
 
-
-
 void update()
 {
 	camera->update(window);
@@ -203,6 +201,17 @@ void draw()
 
 	for (int i = 0; i < size; i++)
 	{
+		if (green == 255)
+		{
+			red = 255;
+			green = 0;
+		}
+		else if (red == 255)
+		{
+			green = 255;
+			red = 0;
+		}
+		
 		double handLposx, handLposy, handRposx, handRposy;
 		handLposx = (left.x / 100);
 		handLposy = (left.y / 100);
@@ -211,11 +220,11 @@ void draw()
 
 		if (cubeXPositions[i] <= (handLposx- margin) && cubeXPositions[i] >= (handLposx + margin) && cubeYPositions[i] <= (handLposy - margin) && cubeYPositions[i] >= (handLposy + margin))
 		{
-
+			pos = 0.0f;
 		}
 		else if (cubeXPositions[i] <= (handRposx - margin) && cubeXPositions[i] >= (handRposx + margin ) && cubeYPositions[i] <= (handRposy - margin) && cubeYPositions[i] >= (handRposy + margin))
 		{
-
+			pos = 0.0f;
 		}
 		else
 		{
@@ -347,21 +356,7 @@ void cubeCreate(int x, int y)
 void ranPos()
 {
 	for (int i = 0; i < size; i++)
-
 	{
-		int clr = (rand() % 2);
-		red = 255;
-		green = 255;
-		if (clr == 1)
-		{
-			red = 255;
-			green = 0;
-		}
-		else if (clr == 2)
-		{
-			red = 0;
-			green = 255;
-		}
 		cubeXPositions[i] = (rand() % 50) - 24;
 		cubeYPositions[i] = (rand() % 30) - 14;
 		std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
