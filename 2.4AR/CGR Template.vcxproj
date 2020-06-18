@@ -116,7 +116,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.2\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);D:\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_world430d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.2\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);C:\Users\User\Documents\TI jaar 2\periode 4\computervision\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world430d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world341d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

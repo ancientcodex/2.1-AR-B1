@@ -46,13 +46,14 @@ void startup(std::shared_ptr<DataManager> dManager)
 	while (!glfwWindowShouldClose(window))
 	{
 		update();
-		draw();
+		
 
 		std::tuple<std::string, cv::Point> t = dManager->getPoint();
 		std::string s = std::get<0>(t);
 		cv::Point p = std::get<1>(t);
-		std::cout << s << " center: x: " << p.x << " y: " << p.y << std::endl;
+		//std::cout << s << " center: x: " << p.x << " y: " << p.y << std::endl;
 
+		draw(t);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -166,7 +167,7 @@ void update()
 
 }
 
-void draw()
+void draw(std::tuple<std::string, cv::Point> t)
 {
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
@@ -186,9 +187,13 @@ void draw()
 
 	glEnable(GL_DEPTH_TEST);
 
-	createLeftHand();
-	createRightHand();
-
+	if (std::get<0>(t) == "handL") {
+		createLeftHand(t);
+	}
+	else if (std::get<0>(t) == "handR") {
+		createRightHand(t);
+	}
+	
 	for (int i = 0; i < size; i++)
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
@@ -208,6 +213,8 @@ void createBackground()
 	glm::mat4 background = glm::mat4(1.0f);
 	background = glm::translate(background, glm::vec3(0, 0, -50));
 
+	
+
 	tigl::shader->setModelMatrix(background);
 	tigl::shader->enableColor(false);
 	tigl::shader->enableTexture(true);
@@ -223,11 +230,13 @@ void createBackground()
 
 }
 
-void createRightHand()
+void createRightHand(std::tuple<std::string, cv::Point> t)
 {
+	cv::Point p = std::get<1>(t);
 	glm::mat4 righthand(1.0f);
-	righthand = glm::translate(righthand, glm::vec3(1, -2, -6));
 	righthand = glm::rotate(righthand, 0.5f, glm::vec3(0, 1, 0));
+	righthand = glm::translate(righthand, glm::vec3(p.x, p.y-2, -1));
+	
 
 	tigl::shader->setModelMatrix(righthand);
 	tigl::shader->enableColor(true);
@@ -237,11 +246,13 @@ void createRightHand()
 
 }
 
-void createLeftHand()
+void createLeftHand(std::tuple<std::string, cv::Point> t)
 {
+	cv::Point p = std::get<1>(t);
 	glm::mat4 lefthand(1.0f);
-	lefthand = glm::translate(lefthand, glm::vec3(0, -2, -6));
 	lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
+	lefthand = glm::translate(lefthand, glm::vec3(p.x, p.y-2, -1));
+	
 
 	tigl::shader->setModelMatrix(lefthand);
 	tigl::shader->enableColor(true);
