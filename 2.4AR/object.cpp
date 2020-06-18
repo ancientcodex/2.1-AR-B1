@@ -9,16 +9,16 @@
 #include <fstream>
 #include <iostream> 
 
-GLFWwindow* window;
-ObjModel* objmodelr;
-ObjModel* objmodell;
-
 int size = 2;
 int cubeXPositions[2];
 int cubeYPositions[2];
 
 //for cleanup
 //ObjModel modelT;
+std::shared_ptr<DataManager> dataManager;
+GLFWwindow* window;
+ObjModel* objmodelr;
+ObjModel* objmodell;
 std::list<std::string> players;
 bool gameOnPause;
 bool gameIsFinished;
@@ -42,18 +42,17 @@ void startup(std::shared_ptr<DataManager> dManager)
 
 	tigl::init();
 	init();
+	dataManager = dManager;
 
 	while (!glfwWindowShouldClose(window))
 	{
 		update();
-		
+
 
 		std::tuple<std::string, cv::Point> t = dManager->getPoint();
-		std::string s = std::get<0>(t);
-		cv::Point p = std::get<1>(t);
-		//std::cout << s << " center: x: " << p.x << " y: " << p.y << std::endl;
 
-		draw(t);
+
+		draw();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -167,7 +166,7 @@ void update()
 
 }
 
-void draw(std::tuple<std::string, cv::Point> t)
+void draw()
 {
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
@@ -187,13 +186,16 @@ void draw(std::tuple<std::string, cv::Point> t)
 
 	glEnable(GL_DEPTH_TEST);
 
-	if (std::get<0>(t) == "handL") {
-		createLeftHand(t);
-	}
-	else if (std::get<0>(t) == "handR") {
-		createRightHand(t);
-	}
-	
+	std::tuple<std::string, cv::Point> temp;
+
+	temp = dataManager->getPoint();
+	if(std::get<0>(temp) == "handL")
+		createLeftHand(temp);
+	temp = dataManager->getPoint();
+	if (std::get<0>(temp) == "handR")
+		createRightHand(temp);
+
+
 	for (int i = 0; i < size; i++)
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
@@ -213,7 +215,7 @@ void createBackground()
 	glm::mat4 background = glm::mat4(1.0f);
 	background = glm::translate(background, glm::vec3(0, 0, -50));
 
-	
+
 
 	tigl::shader->setModelMatrix(background);
 	tigl::shader->enableColor(false);
@@ -235,8 +237,9 @@ void createRightHand(std::tuple<std::string, cv::Point> t)
 	cv::Point p = std::get<1>(t);
 	glm::mat4 righthand(1.0f);
 	righthand = glm::rotate(righthand, 0.5f, glm::vec3(0, 1, 0));
-	righthand = glm::translate(righthand, glm::vec3(p.x, p.y-2, -1));
-	
+	righthand = glm::translate(righthand, glm::vec3(p.x , p.y - 2, -1));
+	std::cout << "handR" << "x: " << p.x << "y: " << (p.y - 2) << std::endl;
+
 
 	tigl::shader->setModelMatrix(righthand);
 	tigl::shader->enableColor(true);
@@ -251,14 +254,12 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 	cv::Point p = std::get<1>(t);
 	glm::mat4 lefthand(1.0f);
 	lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
-	lefthand = glm::translate(lefthand, glm::vec3(p.x, p.y-2, -1));
-	
+	lefthand = glm::translate(lefthand, glm::vec3(p.x , p.y  - 2, -1));
+	std::cout << "handR" << "x: " << p.x << "y: " << (p.y - 2) << std::endl;
 
 	tigl::shader->setModelMatrix(lefthand);
 	tigl::shader->enableColor(true);
 	tigl::shader->enableTexture(false);
-
-
 
 	objmodell->draw();
 }

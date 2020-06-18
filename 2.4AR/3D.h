@@ -15,7 +15,7 @@ using tigl::Vertex;
 void startup(std::shared_ptr<DataManager> dManager);
 void init();
 void update();
-void draw(std::tuple<std::string, cv::Point> t);
+void draw();
 void ranPos();
 void createBackground();
 void cubeCreate(int x, int y);
