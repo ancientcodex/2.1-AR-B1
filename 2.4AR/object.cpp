@@ -16,13 +16,16 @@ int cubeYPositions[2];
 //for cleanup
 //ObjModel modelT;
 std::shared_ptr<DataManager> dataManager;
+
 GLFWwindow* window;
 ObjModel* objmodelr;
 ObjModel* objmodell;
+
 std::list<std::string> players;
 bool gameOnPause;
 bool gameIsFinished;
 textOutput mainText;
+
 glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 lefthand = glm::mat4(1.0f);
 glm::mat4 righthand = glm::mat4(1.0f);
@@ -47,11 +50,6 @@ void startup(std::shared_ptr<DataManager> dManager)
 	while (!glfwWindowShouldClose(window))
 	{
 		update();
-
-
-		std::tuple<std::string, cv::Point> t = dManager->getPoint();
-
-
 		draw();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -179,7 +177,7 @@ void draw()
 	int viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), width / (float)height, 0.1f, 100.0f);
-	glm::mat4 view = glm::lookAt(glm::vec3(0, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0));
 
 	tigl::shader->setProjectionMatrix(projection);
 	tigl::shader->setViewMatrix(camera->getMatrix());
@@ -189,11 +187,11 @@ void draw()
 	std::tuple<std::string, cv::Point> temp;
 
 	temp = dataManager->getPoint();
-	if(std::get<0>(temp) == "handL")
-		createLeftHand(temp);
+	createLeftHand(temp);
+	createRightHand(temp);
 	temp = dataManager->getPoint();
-	if (std::get<0>(temp) == "handR")
-		createRightHand(temp);
+	createLeftHand(temp);
+	createRightHand(temp);
 
 
 	for (int i = 0; i < size; i++)
@@ -231,35 +229,56 @@ void createBackground()
 	tigl::end();
 
 }
-
+cv::Point lastTargetR;
+glm::vec3 handPosR = glm::vec3(0.0f, 0.0f, -3.0f);
 void createRightHand(std::tuple<std::string, cv::Point> t)
 {
-	cv::Point p = std::get<1>(t);
-	glm::mat4 righthand(1.0f);
-	righthand = glm::rotate(righthand, 0.5f, glm::vec3(0, 1, 0));
-	righthand = glm::translate(righthand, glm::vec3(p.x , p.y - 2, -1));
-	std::cout << "handR" << "x: " << p.x << "y: " << (p.y - 2) << std::endl;
+	cv::Point target;
+	float handspeed = 0.05f;
+	if (std::get<0>(t) == "handR") {
+		//targeting
+		target = std::get<1>(t);
+		lastTargetR = target;
+	}
+	target = lastTargetR;
+	handPosR.x += -0.5f + (float)(((target.x / 10) - handPosR.x) * handspeed);
+	handPosR.y += -0.5f + (float)(((target.y / 10) - handPosR.y) * handspeed);
 
+	glm::mat4 righthand(1.0f);
+	//righthand = glm::rotate(righthand, 0.5f, glm::vec3(0, 1, 0));
+	righthand = glm::translate(righthand, handPosR);
 
 	tigl::shader->setModelMatrix(righthand);
 	tigl::shader->enableColor(true);
 	tigl::shader->enableTexture(false);
 
 	objmodelr->draw();
-
 }
 
+cv::Point lastTargetL;
+glm::vec3 handPosL = glm::vec3(0.0f,0.0f,-3.0f);
 void createLeftHand(std::tuple<std::string, cv::Point> t)
 {
-	cv::Point p = std::get<1>(t);
+	cv::Point target;
+	float handspeed = 0.05f;
+	if (std::get<0>(t) == "handL") {
+		//targeting
+		target = std::get<1>(t);
+		lastTargetL = target;
+	}
+	target = lastTargetL;
+	handPosL.x += -0.5f + (float)(((target.x / 10) - handPosL.x ) * handspeed);
+	handPosL.y += -0.5f + (float)(((target.y / 10) - handPosL.y ) * handspeed);
+
 	glm::mat4 lefthand(1.0f);
-	lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
-	lefthand = glm::translate(lefthand, glm::vec3(p.x , p.y  - 2, -1));
-	std::cout << "handR" << "x: " << p.x << "y: " << (p.y - 2) << std::endl;
+	//lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
+	lefthand = glm::translate(lefthand, handPosL);
 
 	tigl::shader->setModelMatrix(lefthand);
 	tigl::shader->enableColor(true);
 	tigl::shader->enableTexture(false);
+
+	//std::cout << " x: " << handPosL.x << " y: " << handPosL.y << std::endl;
 
 	objmodell->draw();
 }
@@ -267,8 +286,6 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 
 void cubeCreate(int x, int y)
 {
-
-
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(x, y, -40));
 
@@ -281,7 +298,6 @@ void cubeCreate(int x, int y)
 	tigl::shader->enableTexture(false);
 
 	tigl::begin(GL_QUADS);
-
 
 	//achterkant
 	tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
