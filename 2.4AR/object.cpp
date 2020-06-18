@@ -10,10 +10,8 @@
 #include <iostream> 
 
 GLFWwindow* window;
-ObjModel* modelT;
-textOutput mainText;
-ObjModel* objmodel;
-GLuint textureId = -1;
+ObjModel* objmodelr;
+ObjModel* objmodell;
 
 int size = 2;
 int cubeXPositions[2];
@@ -23,15 +21,12 @@ void startup(std::shared_ptr<DataManager> dManager)
 {
 void ranPos();
 void cubeCreate(int x, int y);
-void writeTextAction();
-void writePlayerScoreList();
-void createBackground();
+void createLeftHand();
+void createRightHand();
 
 glm::mat4 model = glm::mat4(1.0f);
-glm::mat4 background = glm::mat4(1.0f);
-bool gameIsFinished;
-bool gameOnPause;
-std::list<std::string> players;
+glm::mat4 lefthand = glm::mat4(1.0f);
+glm::mat4 righthand = glm::mat4(1.0f);
     if (!glfwInit())
         throw "Could not initialize glwf";
     window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
@@ -84,7 +79,9 @@ void init()
 		}
     });
     camera = new FpsCam(window);
-    objmodel = new ObjModel("data/RiggedHand.obj");
+    objmodell = new ObjModel("data/leftHand.obj");
+	objmodelr = new ObjModel("data/rightHand.obj");
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glEnable(GL_DEPTH_TEST);
 	srand(time(NULL));
@@ -182,7 +179,6 @@ void update()
 void draw()
 {
 	int width, height;
-
 	glfwGetWindowSize(window, &width, &height);
 
 	glViewport(0, 0, width, height);
@@ -199,6 +195,14 @@ void draw()
 	tigl::shader->setViewMatrix(camera->getMatrix());
 
 	glEnable(GL_DEPTH_TEST);
+	
+	createLeftHand();
+	createRightHand();
+	
+	for (int i = 0; i < size; i++)
+	{
+		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
+	}
 
 	for (int i = 0; i < size; i++)
 	{
@@ -227,6 +231,30 @@ void draw()
 
 	tigl::end();
 	}
+
+		tigl::shader->setModelMatrix(righthand);
+		tigl::shader->enableColor(true);
+		tigl::shader->enableTexture(false);
+
+		objmodelr->draw();
+
+	}
+
+	void createLeftHand() 
+	{
+		glm::mat4 lefthand(1.0f);
+		lefthand = glm::translate(lefthand, glm::vec3(0, -2, -6));
+		lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
+
+		tigl::shader->setModelMatrix(lefthand);
+		tigl::shader->enableColor(true);
+		tigl::shader->enableTexture(false);
+
+		
+
+		objmodell->draw();
+	}
+
 
 	void cubeCreate(int x, int y)
 	{
