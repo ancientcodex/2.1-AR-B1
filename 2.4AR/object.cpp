@@ -1,37 +1,37 @@
 #include "3D.h"
-#include "FpsCam.h"
-#include "time.h"
-#include "ObjModel.h"
-#include <array>
-#include <iostream>
-#include "textOutput.h"
-#include "Player.h"
-#include <fstream>
-#include <iostream> 
 
-
-int size = 2;
-int margin = 0.5;
+int size = 2; // amount of cubes at the time.
 int roundcount = 0;
 int cubeXPositions[2];
 int cubeYPositions[2];
 
-//for cleanup
-//ObjModel modelT;
+/*
+  TODO: make all of the different methods into small classes
+  for cleanup of the deamon child!
+*/
 std::shared_ptr<DataManager> dataManager;
-
 GLFWwindow* window;
 ObjModel* objmodelr;
 ObjModel* objmodell;
-
 std::list<std::string> players;
 bool gameOnPause = false;
 bool gameIsFinished = false;
 textOutput mainText;
-
 glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 lefthand = glm::mat4(1.0f);
 glm::mat4 righthand = glm::mat4(1.0f);
+FpsCam* camera;
+float angle = 0.0f;
+float speed = 0.0f;
+float red = 0.0f;
+float blue = 0.0f;
+float green = 0.0f;
+float pos = 0.0f;
+//for hand this must go in a class at a later iteration
+cv::Point lastTargetR;
+glm::vec3 handPosR = glm::vec3(0.0f, 0.0f, 3.0f);
+cv::Point lastTargetL;
+glm::vec3 handPosL = glm::vec3(0.0f, 0.0f, 3.0f);
 
 
 void startup(std::shared_ptr<DataManager> dManager)
@@ -64,26 +64,21 @@ void startup(std::shared_ptr<DataManager> dManager)
 	glfwTerminate();
 }
 
-FpsCam* camera;
 //INIT METHOD RUN AT START
 void init()
 {
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
-			if (key == GLFW_KEY_ESCAPE)
+			switch (key) {
+			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(window, true);
-
-			if (key == GLFW_KEY_P)
-			{
-				//TODO: game pause method
+				break;
+			case GLFW_KEY_P:
 				gameOnPause = true;
-
-			}
-
-			if (key == GLFW_KEY_S)
-			{
-				//TODO: game start method
+				break;
+			case GLFW_KEY_S:
 				gameOnPause = false;
+				break;
 			}
 		});
 	camera = new FpsCam(window);
@@ -94,7 +89,6 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 	srand(time(NULL));
 	ranPos();
-	//modelT = new ObjModel("models/car/honda_jazz.obj");
 
 	std::ifstream input("gamesplayer.txt");
 	if (input.fail())
@@ -107,10 +101,6 @@ void init()
 	{
 		players.push_front(info);
 	}
-
-	//set status boolean
-	gameOnPause = false;
-	gameIsFinished = false;
 
 	//Init to draw texts
 	mainText.init();
@@ -147,25 +137,16 @@ void init()
 	}
 }
 
-float angle = 0.0f;
-float speed = 0.0f;
-float red = 0.0f;
-float blue = 0.0f;
-float green = 0.0f;
-float pos = 0.0f;
-
 void update()
 {
 	camera->update(window);
-
-	if (pos >= 15.0f)
+	if (pos >= 18.0f)
 	{
 		pos = 0.0f;
 		ranPos();
 	}
 	angle += 0.01f;
-	speed += 0.2f;
-	pos += 0.01f;
+	pos += 0.02f;
 
 }
 
@@ -182,10 +163,11 @@ void draw()
 	int viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), width / (float)height, 0.1f, 100.0f);
-	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0));
+	// eye is camera position, center is where you look at and up is which direction is up.
+	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 	tigl::shader->setProjectionMatrix(projection);
-	tigl::shader->setViewMatrix(camera->getMatrix());
+	tigl::shader->setViewMatrix(view);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -217,17 +199,13 @@ void draw()
 			red = 0;
 		}
 
-		double handLposx, handLposy, handRposx, handRposy;
-		handLposx = (left.x / 100);
-		handLposy = (left.y / 100);
-		handRposx = (right.x / 100);
-		handRposy = (right.y / 100);
-
-		if (cubeXPositions[i] <= (handLposx - margin) && cubeXPositions[i] >= (handLposx + margin) && cubeYPositions[i] <= (handLposy - margin) && cubeYPositions[i] >= (handLposy + margin))
+		//colision detection
+		int margin = 0.5;
+		if (cubeXPositions[i] <= (handPosL.x - margin) && cubeXPositions[i] >= (handPosL.x + margin) && cubeYPositions[i] <= (handPosL.y - margin) && cubeYPositions[i] >= (handPosL.y + margin))
 		{
 			pos = 0.0f;
 		}
-		else if (cubeXPositions[i] <= (handRposx - margin) && cubeXPositions[i] >= (handRposx + margin) && cubeYPositions[i] <= (handRposy - margin) && cubeYPositions[i] >= (handRposy + margin))
+		else if (cubeXPositions[i] <= (handPosR.x - margin) && cubeXPositions[i] >= (handPosR.x + margin) && cubeYPositions[i] <= (handPosR.y - margin) && cubeYPositions[i] >= (handPosR.y + margin))
 		{
 			pos = 0.0f;
 		}
@@ -240,19 +218,6 @@ void draw()
 
 	writeTextAction();
 	writePlayerScoreList();
-
-	glm::mat4 testRectangle(1.0f);
-	tigl::shader->setModelMatrix(testRectangle);
-	tigl::shader->enableColor(true);
-	tigl::shader->enableTexture(false);
-	tigl::begin(GL_QUADS);
-
-	tigl::addVertex(Vertex::P(glm::vec3(1, 0, -3)));
-	tigl::addVertex(Vertex::P(glm::vec3(0, 1, -3)));
-	tigl::addVertex(Vertex::P(glm::vec3(0, 0, -3)));
-	tigl::addVertex(Vertex::P(glm::vec3(1, 1, -3)));
-
-	tigl::end();
 }
 
 void createBackground()
@@ -276,10 +241,11 @@ void createBackground()
 	tigl::end();
 
 }
-cv::Point lastTargetR;
-glm::vec3 handPosR = glm::vec3(0.0f, 0.0f, 3.0f);
+
 void createRightHand(std::tuple<std::string, cv::Point> t)
 {
+	float offsetX = -0.0f;
+	float offsetY = -0.0f;
 	cv::Point target;
 	float handspeed = 0.05f;
 	if (std::get<0>(t) == "handR") {
@@ -288,8 +254,8 @@ void createRightHand(std::tuple<std::string, cv::Point> t)
 		lastTargetR = target;
 	}
 	target = lastTargetR;
-	handPosR.x += (float)(((target.x * 0.025f) - handPosR.x) * handspeed);
-	handPosR.y += (float)(((target.y * 0.025f) - handPosR.y) * handspeed);
+	handPosR.x += (float)((((target.x * 0.021875f) - handPosR.x) + offsetX) * handspeed);
+	handPosR.y += (float)((((target.y * 0.017f) - handPosR.y) + offsetY) * handspeed);
 
 	glm::mat4 righthand(1.0f);
 	//righthand = glm::rotate(righthand, 0.5f, glm::vec3(0, 1, 0));
@@ -303,20 +269,21 @@ void createRightHand(std::tuple<std::string, cv::Point> t)
 	objmodelr->draw();
 }
 
-cv::Point lastTargetL;
-glm::vec3 handPosL = glm::vec3(0.0f, 0.0f, 3.0f);
 void createLeftHand(std::tuple<std::string, cv::Point> t)
 {
 	cv::Point target;
-	float handspeed = 0.05f;
+	float handspeed =0.05f;
 	if (std::get<0>(t) == "handL") {
 		//targeting
 		target = std::get<1>(t);
 		lastTargetL = target;
 	}
 	target = lastTargetL;
-	handPosL.x += (float)(((target.x * 0.025f) - handPosL.x) * handspeed);
-	handPosL.y += (float)(((target.y * 0.025f) - handPosL.y) * handspeed);
+
+	handPosL.x += (float) (((target.x * 0.021875f) - handPosL.x) + 0 ) * handspeed;
+	handPosL.y += (float) (((target.y * 0.068f) - handPosL.y) - 7.5 ) * handspeed;
+
+	//handPosL.y += (float)((((target.y * (0.017f)) - handPosL.y) + offsetY) * handspeed);
 
 	glm::mat4 lefthand(1.0f);
 	//lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
@@ -328,7 +295,7 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 	tigl::shader->enableColor(true);
 	tigl::shader->enableTexture(false);
 
-	//std::cout << " x: " << handPosL.x << " y: " << handPosL.y << std::endl;
+	std::cout << " x: " << handPosL.x << " y: " << handPosL.y << std::endl;
 
 	objmodell->draw();
 }
@@ -392,7 +359,7 @@ void ranPos()
 	for (int i = 0; i < size; i++)
 	{
 		cubeXPositions[i] = (rand() % 50) - 24;
-		cubeYPositions[i] = (rand() % 30) - 14;
+		cubeYPositions[i] = (rand() % 30) - 20;
 		std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
 	}
 }

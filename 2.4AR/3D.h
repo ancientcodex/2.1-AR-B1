@@ -5,6 +5,15 @@
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "DataManager.h"
+#include "FpsCam.h"
+#include "time.h"
+#include "ObjModel.h"
+#include <array>
+#include <iostream>
+#include "textOutput.h"
+#include "Player.h"
+#include <fstream>
+#include <iostream> 
 
 using tigl::Vertex;
 
