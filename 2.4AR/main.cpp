@@ -13,8 +13,6 @@
 
 using tigl::Vertex;
 
-void facerecognition();
-
 int main(int argc, char* argv[])
 {
 	DataManager dataManager;

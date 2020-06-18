@@ -19,3 +19,7 @@ void draw();
 void ranPos();
 void createBackground();
 void cubeCreate(int x, int y);
+void createLeftHand();
+void createRightHand();
+void writeTextAction();
+void writePlayerScoreList();

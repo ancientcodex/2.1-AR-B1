@@ -17,76 +17,79 @@ int size = 2;
 int cubeXPositions[2];
 int cubeYPositions[2];
 
-void startup(std::shared_ptr<DataManager> dManager)
-{
-void ranPos();
-void cubeCreate(int x, int y);
-void createLeftHand();
-void createRightHand();
-
+//for cleanup
+//ObjModel modelT;
+std::list<std::string> players;
+bool gameOnPause;
+bool gameIsFinished;
+textOutput mainText;
 glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 lefthand = glm::mat4(1.0f);
 glm::mat4 righthand = glm::mat4(1.0f);
-    if (!glfwInit())
-        throw "Could not initialize glwf";
-    window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        throw "Could not initialize glwf";
-    }
-    glfwMakeContextCurrent(window);
 
-    tigl::init();
-    init();
 
-    while (!glfwWindowShouldClose(window))
-    {
-        update();
-        draw();
+void startup(std::shared_ptr<DataManager> dManager)
+{
+	if (!glfwInit())
+		throw "Could not initialize glwf";
+	window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
+	if (!window)
+	{
+		glfwTerminate();
+		throw "Could not initialize glwf";
+	}
+	glfwMakeContextCurrent(window);
 
-        std::tuple<std::string, cv::Point> t = dManager->getPoint();
-        std::string s = std::get<0>(t);
-        cv::Point p = std::get<1>(t);
-        std::cout << s << " center: x: " << p.x << " y: " << p.y << std::endl;
+	tigl::init();
+	init();
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-    glfwTerminate();
+	while (!glfwWindowShouldClose(window))
+	{
+		update();
+		draw();
+
+		std::tuple<std::string, cv::Point> t = dManager->getPoint();
+		std::string s = std::get<0>(t);
+		cv::Point p = std::get<1>(t);
+		std::cout << s << " center: x: " << p.x << " y: " << p.y << std::endl;
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+	glfwTerminate();
 }
 
 FpsCam* camera;
 //INIT METHOD RUN AT START
 void init()
 {
-    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
-        if (key == GLFW_KEY_ESCAPE)
-            glfwSetWindowShouldClose(window, true);
-
-		if (key == GLFW_KEY_P)
+	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
-			//TODO: game pause method
-			gameOnPause = true;
+			if (key == GLFW_KEY_ESCAPE)
+				glfwSetWindowShouldClose(window, true);
 
-		}
+			if (key == GLFW_KEY_P)
+			{
+				//TODO: game pause method
+				gameOnPause = true;
 
-		if (key == GLFW_KEY_S)
-		{
-			//TODO: game start method
-			gameOnPause = false;
-		}
-    });
-    camera = new FpsCam(window);
-    objmodell = new ObjModel("data/leftHand.obj");
+			}
+
+			if (key == GLFW_KEY_S)
+			{
+				//TODO: game start method
+				gameOnPause = false;
+			}
+		});
+	camera = new FpsCam(window);
+	objmodell = new ObjModel("data/leftHand.obj");
 	objmodelr = new ObjModel("data/rightHand.obj");
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glEnable(GL_DEPTH_TEST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glEnable(GL_DEPTH_TEST);
 	srand(time(NULL));
 	ranPos();
-	modelT = new ObjModel("models/car/honda_jazz.obj");
+	//modelT = new ObjModel("models/car/honda_jazz.obj");
 
 	std::ifstream input("gamesplayer.txt");
 	if (input.fail())
@@ -103,19 +106,19 @@ void init()
 	//set status boolean
 	gameOnPause = false;
 	gameIsFinished = false;
-	
+
 	//Init to draw texts
 	mainText.init();
 
 	//TODO: Diffrent place will help openGL to run better
 	if (gameIsFinished)
-	{	
+	{
 		//get name
 		std::string name;
 		std::cout << "fill in name: (max 8 characters)" << std::endl;
 		std::cin >> name;
 		int sizeName = name.size();
-		if (sizeName > 8) 
+		if (sizeName > 8)
 		{
 			std::cout << "fill in name: (max 8 characters)" << std::endl;
 			std::cin >> name;
@@ -137,19 +140,6 @@ void init()
 			gameIsFinished = false;
 		}
 	}
-	objmodel = new ObjModel("models/car/honda_jazz.obj");
-
-	glGenTextures(1, &textureId);
-	glBindTexture(GL_TEXTURE_2D, textureId);
-
-	char data[32 * 32 * 4];
-	for (int i = 0; i < 32 * 32 * 4; i++)
-		data[i] = rand() % 255;
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 float angle = 0.0f;
@@ -163,17 +153,17 @@ float pos = 0.0f;
 
 void update()
 {
-    camera->update(window);
+	camera->update(window);
 
 	if (pos >= 15.0f)
 	{
 		pos = 0.0f;
 		ranPos();
 	}
-    angle += 0.01f;
-    speed += 0.02f;
-    pos += 0.01f;
-    
+	angle += 0.01f;
+	speed += 0.02f;
+	pos += 0.01f;
+
 }
 
 void draw()
@@ -195,10 +185,10 @@ void draw()
 	tigl::shader->setViewMatrix(camera->getMatrix());
 
 	glEnable(GL_DEPTH_TEST);
-	
+
 	createLeftHand();
 	createRightHand();
-	
+
 	for (int i = 0; i < size; i++)
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
@@ -213,8 +203,8 @@ void draw()
 	writePlayerScoreList();
 }
 
-	void createBackground()
-	{
+void createBackground()
+{
 	glm::mat4 background = glm::mat4(1.0f);
 	background = glm::translate(background, glm::vec3(0, 0, -50));
 
@@ -230,134 +220,141 @@ void draw()
 	tigl::addVertex(Vertex::PC(glm::vec3(-100, -100, 0), glm::vec4(green, green, blue, 1)));
 
 	tigl::end();
-	}
 
-		tigl::shader->setModelMatrix(righthand);
-		tigl::shader->enableColor(true);
-		tigl::shader->enableTexture(false);
+}
 
-		objmodelr->draw();
+void createRightHand()
+{
+	glm::mat4 righthand(1.0f);
+	righthand = glm::translate(righthand, glm::vec3(1, -2, -6));
+	righthand = glm::rotate(righthand, 0.5f, glm::vec3(0, 1, 0));
 
-	}
+	tigl::shader->setModelMatrix(righthand);
+	tigl::shader->enableColor(true);
+	tigl::shader->enableTexture(false);
 
-	void createLeftHand() 
+	objmodelr->draw();
+
+}
+
+void createLeftHand()
+{
+	glm::mat4 lefthand(1.0f);
+	lefthand = glm::translate(lefthand, glm::vec3(0, -2, -6));
+	lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
+
+	tigl::shader->setModelMatrix(lefthand);
+	tigl::shader->enableColor(true);
+	tigl::shader->enableTexture(false);
+
+
+
+	objmodell->draw();
+}
+
+
+void cubeCreate(int x, int y)
+{
+
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(x, y, -40));
+
+	//(x-as, y-as, z-as) (left/right, up/down, front/back)
+	model = glm::translate(model, glm::vec3(0, 0, pos));
+	model = glm::rotate(model, angle, glm::vec3(1, 1, 0));
+
+	tigl::shader->setModelMatrix(model);
+	tigl::shader->enableColor(true);
+	tigl::shader->enableTexture(false);
+
+	tigl::begin(GL_QUADS);
+
+
+	//achterkant
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, 0, 1)));
+
+	//voorkant
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, 0, 1)));
+
+	//onderkant
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, 0, 1)));
+
+	//bovenkant
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, 0, 1)));
+
+	//rechterkant
+	tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, 0, 1)));
+	//linkerkant
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, 0, 1)));
+
+	tigl::end();
+}
+
+void ranPos()
+{
+	for (int i = 0; i < size; i++)
+
 	{
-		glm::mat4 lefthand(1.0f);
-		lefthand = glm::translate(lefthand, glm::vec3(0, -2, -6));
-		lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
-
-		tigl::shader->setModelMatrix(lefthand);
-		tigl::shader->enableColor(true);
-		tigl::shader->enableTexture(false);
-
-		
-
-		objmodell->draw();
-	}
-
-
-	void cubeCreate(int x, int y)
-	{
-		
-		
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(x, y, -40));
-
-		//(x-as, y-as, z-as) (left/right, up/down, front/back)
-		model = glm::translate(model, glm::vec3(0, 0, pos));
-		model = glm::rotate(model, angle, glm::vec3(1, 1, 0));
-
-		tigl::shader->setModelMatrix(model);
-		tigl::shader->enableColor(true);
-		tigl::shader->enableTexture(false);
-
-		tigl::begin(GL_QUADS);
-
-
-		//achterkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, 0, 1)));
-
-		//voorkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, 0, 1)));
-
-		//onderkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, 0, 1)));
-
-		//bovenkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, 0, 1)));
-
-		//rechterkant
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, -1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, 1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(1, -1, -1), glm::vec4(red, green, 0, 1)));
-		//linkerkant
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, -1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, 1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, 1), glm::vec4(red, green, 0, 1)));
-		tigl::addVertex(Vertex::PC(glm::vec3(-1, -1, -1), glm::vec4(red, green, 0, 1)));
-
-		tigl::end();
-	}
-
-	void ranPos()
-	{
-		for (int i = 0; i < size; i++)
-
+		int clr = (rand() % 2);
+		red = 255;
+		green = 255;
+		if (clr == 1)
 		{
-			int clr = (rand() % 2);
 			red = 255;
-		    green = 255;
-			if (clr == 1)
-			{
-				red = 255;
-				green = 0;
-			}
-			else if (clr == 2)
-			{
-				red = 0;
-				green = 255;
-			}
-		cubeXPositions[i] = (rand() % 50) -24;
+			green = 0;
+		}
+		else if (clr == 2)
+		{
+			red = 0;
+			green = 255;
+		}
+		cubeXPositions[i] = (rand() % 50) - 24;
 		cubeYPositions[i] = (rand() % 30) - 14;
 		std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
-		}
+	}
+}
+
+void writeTextAction()
+{
+	//Get fitting text for status of the game
+
+	if (gameOnPause)
+	{
+		mainText.draw("Press 'S' to start", 0, 32);
+	}
+	else
+	{
+		mainText.draw("Press 'P' to pause", 0, 32);
 	}
 
-	void writeTextAction()
-	{
-		//Get fitting text for status of the game
-	
-		if (gameOnPause)
-		{
-			mainText.draw("Press 'S' to start", 0, 32);
-		}
-		else
-		{
-			mainText.draw("Press 'P' to pause", 0, 32);
-		}
-	
-	}
+}
 
-	void writePlayerScoreList()
+void writePlayerScoreList()
+{
+	std::list<std::string>::iterator it;
+	int  i = 32;
+	for (it = players.begin(); it != players.end(); ++it)
 	{
-		std::list<std::string>::iterator it;
-		int  i = 32;
-		for (it = players.begin(); it != players.end(); ++it)
-		{
-			mainText.draw(*it, 1100, i);
-			i += 32;
-		}
+		mainText.draw(*it, 1100, i);
+		i += 32;
 	}
+}
