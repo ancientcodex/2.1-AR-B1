@@ -25,8 +25,8 @@ ObjModel* objmodelr;
 ObjModel* objmodell;
 
 std::list<std::string> players;
-bool gameOnPause;
-bool gameIsFinished;
+bool gameOnPause = false;
+bool gameIsFinished = false;
 textOutput mainText;
 
 glm::mat4 model = glm::mat4(1.0f);
@@ -52,15 +52,14 @@ void startup(std::shared_ptr<DataManager> dManager)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		while (!gameOnPause)
-		{
-			update();
-			std::tuple<std::string, cv::Point> t = dManager->getPoint();
+		//while (!gameOnPause)
+		//{
+		update();
+		draw();
+		//}
+		glfwSwapBuffers(window);
+		glfwPollEvents();
 
-			draw();
-			glfwSwapBuffers(window);
-			glfwPollEvents();
-		}	
 	}
 	glfwTerminate();
 }
@@ -165,7 +164,7 @@ void update()
 		ranPos();
 	}
 	angle += 0.01f;
-	speed += 0.02f;
+	speed += 0.2f;
 	pos += 0.01f;
 
 }
@@ -217,18 +216,18 @@ void draw()
 			green = 255;
 			red = 0;
 		}
-		
+
 		double handLposx, handLposy, handRposx, handRposy;
 		handLposx = (left.x / 100);
 		handLposy = (left.y / 100);
 		handRposx = (right.x / 100);
 		handRposy = (right.y / 100);
 
-		if (cubeXPositions[i] <= (handLposx- margin) && cubeXPositions[i] >= (handLposx + margin) && cubeYPositions[i] <= (handLposy - margin) && cubeYPositions[i] >= (handLposy + margin))
+		if (cubeXPositions[i] <= (handLposx - margin) && cubeXPositions[i] >= (handLposx + margin) && cubeYPositions[i] <= (handLposy - margin) && cubeYPositions[i] >= (handLposy + margin))
 		{
 			pos = 0.0f;
 		}
-		else if (cubeXPositions[i] <= (handRposx - margin) && cubeXPositions[i] >= (handRposx + margin ) && cubeYPositions[i] <= (handRposy - margin) && cubeYPositions[i] >= (handRposy + margin))
+		else if (cubeXPositions[i] <= (handRposx - margin) && cubeXPositions[i] >= (handRposx + margin) && cubeYPositions[i] <= (handRposy - margin) && cubeYPositions[i] >= (handRposy + margin))
 		{
 			pos = 0.0f;
 		}
@@ -236,17 +235,24 @@ void draw()
 		{
 			cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 		}
-		
-	}
-
-	for (int i = 0; i < size; i++)
-	{
-		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
 	roundcount++;
 
 	writeTextAction();
 	writePlayerScoreList();
+
+	glm::mat4 testRectangle(1.0f);
+	tigl::shader->setModelMatrix(testRectangle);
+	tigl::shader->enableColor(true);
+	tigl::shader->enableTexture(false);
+	tigl::begin(GL_QUADS);
+
+	tigl::addVertex(Vertex::P(glm::vec3(1, 0, -3)));
+	tigl::addVertex(Vertex::P(glm::vec3(0, 1, -3)));
+	tigl::addVertex(Vertex::P(glm::vec3(0, 0, -3)));
+	tigl::addVertex(Vertex::P(glm::vec3(1, 1, -3)));
+
+	tigl::end();
 }
 
 void createBackground()
@@ -271,7 +277,7 @@ void createBackground()
 
 }
 cv::Point lastTargetR;
-glm::vec3 handPosR = glm::vec3(0.0f, 0.0f, -3.0f);
+glm::vec3 handPosR = glm::vec3(0.0f, 0.0f, 3.0f);
 void createRightHand(std::tuple<std::string, cv::Point> t)
 {
 	cv::Point target;
@@ -282,12 +288,13 @@ void createRightHand(std::tuple<std::string, cv::Point> t)
 		lastTargetR = target;
 	}
 	target = lastTargetR;
-	handPosR.x += -0.5f + (float)(((target.x / 10) - handPosR.x) * handspeed);
-	handPosR.y += -0.5f + (float)(((target.y / 10) - handPosR.y) * handspeed);
+	handPosR.x += (float)(((target.x * 0.025f) - handPosR.x) * handspeed);
+	handPosR.y += (float)(((target.y * 0.025f) - handPosR.y) * handspeed);
 
 	glm::mat4 righthand(1.0f);
 	//righthand = glm::rotate(righthand, 0.5f, glm::vec3(0, 1, 0));
-	righthand = glm::translate(righthand, handPosR);
+	righthand = glm::translate(righthand, -handPosR);
+	//righthand = glm::translate(righthand, glm::vec3(0, -3, 0));
 
 	tigl::shader->setModelMatrix(righthand);
 	tigl::shader->enableColor(true);
@@ -297,7 +304,7 @@ void createRightHand(std::tuple<std::string, cv::Point> t)
 }
 
 cv::Point lastTargetL;
-glm::vec3 handPosL = glm::vec3(0.0f,0.0f,-3.0f);
+glm::vec3 handPosL = glm::vec3(0.0f, 0.0f, 3.0f);
 void createLeftHand(std::tuple<std::string, cv::Point> t)
 {
 	cv::Point target;
@@ -308,12 +315,14 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 		lastTargetL = target;
 	}
 	target = lastTargetL;
-	handPosL.x += -0.5f + (float)(((target.x / 10) - handPosL.x ) * handspeed);
-	handPosL.y += -0.5f + (float)(((target.y / 10) - handPosL.y ) * handspeed);
+	handPosL.x += (float)(((target.x * 0.025f) - handPosL.x) * handspeed);
+	handPosL.y += (float)(((target.y * 0.025f) - handPosL.y) * handspeed);
 
 	glm::mat4 lefthand(1.0f);
 	//lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
-	lefthand = glm::translate(lefthand, handPosL);
+	lefthand = glm::translate(lefthand, -handPosL);
+	//lefthand = glm::translate(lefthand, glm::vec3(0, -3, 0));
+
 
 	tigl::shader->setModelMatrix(lefthand);
 	tigl::shader->enableColor(true);

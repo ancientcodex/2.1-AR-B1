@@ -12,6 +12,8 @@ SkinDetector::SkinDetector(void) {
 
 	skinColorSamplerRectangle1, skinColorSamplerRectangle2;
 }
+
+// draws squares for analyzing the skin?
 void SkinDetector::drawSkinColorSampler(Mat input) {
 	int frameWidth = input.size().width, frameHeight = input.size().height;
 
@@ -33,7 +35,7 @@ void SkinDetector::drawSkinColorSampler(Mat input) {
 		rectangleColor
 	);
 }
-
+// calibrates what color to look for in the image(skincolor).
 void SkinDetector::calibrate(Mat input) {
 
 	Mat hsvInput;
@@ -46,7 +48,7 @@ void SkinDetector::calibrate(Mat input) {
 
 	calibrated = true;
 }
-
+// basted on the callibrated value calculates the thresholds for the detector.
 void SkinDetector::calculateThresholds(Mat sample1, Mat sample2) {
 	int offsetLowThreshold = 80;
 	int offsetHighThreshold = 30;
@@ -63,7 +65,7 @@ void SkinDetector::calculateThresholds(Mat sample1, Mat sample2) {
 	vLowThreshold = min(hsvMeansSample1[2], hsvMeansSample2[2]) - offsetLowThreshold;
 	vHighThreshold = max(hsvMeansSample1[2], hsvMeansSample2[2]) + offsetHighThreshold;
 }
-
+//creates a mask to detect skin color.
 Mat SkinDetector::getSkinMask(Mat input) {
 	Mat skinMask;
 
@@ -86,7 +88,7 @@ Mat SkinDetector::getSkinMask(Mat input) {
 
 	return skinMask;
 }
-
+// use opening algoritm to create a clear image with only skincolor.
 void SkinDetector::performOpening(Mat binaryImage, int kernelShape, Point kernelSize) {
 	Mat structuringElement = getStructuringElement(kernelShape, kernelSize);
 	morphologyEx(binaryImage, binaryImage, MORPH_OPEN, structuringElement);
