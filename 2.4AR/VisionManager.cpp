@@ -3,7 +3,7 @@
 VisionManager::VisionManager(std::shared_ptr<DataManager> dManager) {
 
 	dataManager = dManager;
-	cam = cv::VideoCapture("http://192.168.1.32:4747/mjpegfeed?640x480");
+	cam = cv::VideoCapture("http://192.168.178.136:4747/mjpegfeed?640x480");
 	cam.set(cv::CAP_PROP_SETTINGS, 1);
 
 	if (!cam.isOpened()) {
