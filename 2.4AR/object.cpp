@@ -10,6 +10,7 @@
 #include <iostream> 
 
 int size = 2;
+int margin = 0.5;
 int cubeXPositions[2];
 int cubeYPositions[2];
 
@@ -32,7 +33,7 @@ void startup(std::shared_ptr<DataManager> dManager)
 {
 	if (!glfwInit())
 		throw "Could not initialize glwf";
-	window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
+	window = glfwCreateWindow(1400, 800, "Game", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -186,19 +187,41 @@ void draw()
 
 	glEnable(GL_DEPTH_TEST);
 
+	cv::Point left, right;
+
 	std::tuple<std::string, cv::Point> temp;
 
 	temp = dataManager->getPoint();
 	if(std::get<0>(temp) == "handL")
 		createLeftHand(temp);
+	left = std::get<1>(temp);
 	temp = dataManager->getPoint();
 	if (std::get<0>(temp) == "handR")
 		createRightHand(temp);
+	right = std::get<1>(temp);
 
 
 	for (int i = 0; i < size; i++)
 	{
-		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
+		double handLposx, handLposy, handRposx, handRposy;
+		handLposx = (left.x / 100);
+		handLposy = (left.y / 100);
+		handRposx = (right.x / 100);
+		handRposy = (right.y / 100);
+
+		if (cubeXPositions[i] <= (handLposx- margin) && cubeXPositions[i] >= (handLposx + margin) && cubeYPositions[i] <= (handLposy - margin) && cubeYPositions[i] >= (handLposy + margin))
+		{
+
+		}
+		else if (cubeXPositions[i] <= (handRposx - margin) && cubeXPositions[i] >= (handRposx + margin ) && cubeYPositions[i] <= (handRposy - margin) && cubeYPositions[i] >= (handRposy + margin))
+		{
+
+		}
+		else
+		{
+			cubeCreate(cubeXPositions[i], cubeYPositions[i]);
+		}
+		
 	}
 
 	for (int i = 0; i < size; i++)
