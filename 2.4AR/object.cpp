@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream> 
 
+int round = 0;
 int size = 2;
 int margin = 0.5;
 int cubeXPositions[2];
@@ -48,8 +49,6 @@ void startup(std::shared_ptr<DataManager> dManager)
 	while (!glfwWindowShouldClose(window))
 	{
 		update();
-
-
 		std::tuple<std::string, cv::Point> t = dManager->getPoint();
 
 
@@ -237,6 +236,7 @@ void draw()
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
+	round++;
 
 	writeTextAction();
 	writePlayerScoreList();
