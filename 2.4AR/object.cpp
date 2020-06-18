@@ -9,9 +9,10 @@
 #include <fstream>
 #include <iostream> 
 
-int round = 0;
+
 int size = 2;
 int margin = 0.5;
+int roundcount = 0;
 int cubeXPositions[2];
 int cubeYPositions[2];
 
@@ -197,7 +198,8 @@ void draw()
 		createRightHand(temp);
 	right = std::get<1>(temp);
 
-
+	red = 0;
+	green = 255;
 	for (int i = 0; i < size; i++)
 	{
 		if (green == 255)
@@ -236,7 +238,7 @@ void draw()
 	{
 		cubeCreate(cubeXPositions[i], cubeYPositions[i]);
 	}
-	round++;
+	roundcount++;
 
 	writeTextAction();
 	writePlayerScoreList();
