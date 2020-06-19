@@ -17,6 +17,7 @@ void VisionManager::updater() {
 
 	while (true) {
 		cam >> frame;
+		cv::flip(frame,frame,1);
 		cv::resize(frame, frame, cv::Size(), factor, factor, cv::INTER_AREA);
 		frameOut = frame.clone();
 

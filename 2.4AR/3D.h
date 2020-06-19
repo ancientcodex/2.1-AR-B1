@@ -14,6 +14,7 @@
 #include "Player.h"
 #include <fstream>
 #include <iostream> 
+#include <math.h> 
 
 using tigl::Vertex;
 
@@ -27,8 +28,10 @@ void update();
 void draw();
 void ranPos();
 void createBackground();
-void cubeCreate(int x, int y);
+void cubeCreate(int x, int y, int color);
 void createLeftHand(std::tuple<std::string, cv::Point> t);
 void createRightHand(std::tuple<std::string, cv::Point> t);
 void writeTextAction();
 void writePlayerScoreList();
+float calculateDistance(float x1, float y1, float x2, float y2);
+void collisionDetection();

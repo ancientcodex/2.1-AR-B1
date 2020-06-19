@@ -1,9 +1,12 @@
 #include "3D.h"
 
 int size = 2; // amount of cubes at the time.
-int roundcount = 0;
+int roundcount = 19;
 int cubeXPositions[2];
 int cubeYPositions[2];
+cv::Point redCube;
+cv::Point greenCube;
+
 
 /*
   TODO: make all of the different methods into small classes
@@ -17,16 +20,13 @@ std::list<std::string> players;
 bool gameOnPause = false;
 bool gameIsFinished = false;
 textOutput mainText;
-glm::mat4 model = glm::mat4(1.0f);
 glm::mat4 lefthand = glm::mat4(1.0f);
 glm::mat4 righthand = glm::mat4(1.0f);
 FpsCam* camera;
 float angle = 0.0f;
 float speed = 0.0f;
-float red = 0.0f;
-float blue = 0.0f;
-float green = 0.0f;
 float pos = 0.0f;
+int score = 0;
 //for hand this must go in a class at a later iteration
 cv::Point lastTargetR;
 glm::vec3 handPosR = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -75,9 +75,15 @@ void init()
 				break;
 			case GLFW_KEY_P:
 				gameOnPause = true;
+				if(roundcount > 20){
+					roundcount = 0;
+				}
 				break;
 			case GLFW_KEY_S:
 				gameOnPause = false;
+				if(roundcount > 20){
+					roundcount = 0;
+				}
 				break;
 			}
 		});
@@ -139,14 +145,23 @@ void init()
 
 void update()
 {
-	camera->update(window);
-	if (pos >= 18.0f)
-	{
-		pos = 0.0f;
-		ranPos();
+	if (roundcount > 20) {
+		gameOnPause = true;
 	}
-	angle += 0.01f;
-	pos += 0.02f;
+	camera->update(window);
+	if (!gameOnPause) {
+		if (pos >= 18.0f)
+		{
+			pos = 0.0f;
+			ranPos();
+			roundcount++;
+		}
+		angle += 0.01f;
+		pos += 0.02f;
+
+
+	}
+
 
 }
 
@@ -170,58 +185,111 @@ void draw()
 	tigl::shader->setViewMatrix(view);
 
 	glEnable(GL_DEPTH_TEST);
+	if (!gameOnPause ) {
+		cv::Point left, right;
+		std::tuple<std::string, cv::Point> temp;
+		temp = dataManager->getPoint();
+		createLeftHand(temp);
+		createRightHand(temp);
+		left = std::get<1>(temp);
+		temp = dataManager->getPoint();
+		createLeftHand(temp);
+		createRightHand(temp);
+		right = std::get<1>(temp);
+		collisionDetection();
+		
+	}
+	writeTextAction();
+	writePlayerScoreList();
+}
+//colision detection
+void collisionDetection() {
+	bool color = false;
+	bool leftColor = false;
+	bool rightColor = false;
+	float lClosest = 0, rClosest = 0;
 
-	cv::Point left, right;
+	//distance
+	float dRedL = calculateDistance(handPosL.x, handPosL.y, redCube.x, redCube.y);
+	float dGreenL = calculateDistance(handPosL.x, handPosL.y, greenCube.x, greenCube.y);
 
-	std::tuple<std::string, cv::Point> temp;
+	float dRedR = calculateDistance(handPosR.x, handPosR.y, redCube.x, redCube.y);
+	float dGreenR = calculateDistance(handPosR.x, handPosR.y, greenCube.x, greenCube.y);
 
-	temp = dataManager->getPoint();
-	createLeftHand(temp);
-	createRightHand(temp);
-	left = std::get<1>(temp);
-	temp = dataManager->getPoint();
-	createLeftHand(temp);
-	createRightHand(temp);
-	right = std::get<1>(temp);
-
-	red = 0;
-	green = 255;
 	for (int i = 0; i < size; i++)
 	{
-		if (green == 255)
-		{
-			red = 255;
-			green = 0;
-		}
-		else if (red == 255)
-		{
-			green = 255;
-			red = 0;
-		}
-
-		//colision detection
-		float margin = 5.0f;
+		bool collision = false;
+		float margin = 6.5f;
 		if (pos > 5 && (cubeXPositions[i] >= (handPosL.x - margin) && cubeXPositions[i] <= (handPosL.x + margin)) && (cubeYPositions[i] >= (handPosL.y - margin) && cubeYPositions[i] <= (handPosL.y + margin)))
 		{
-				pos = 0.0f;
-				std::cout << "left hand kills cube" << std::endl;
-				ranPos();
+			if (dRedL > dGreenL) {
+				lClosest = dGreenL;
+				leftColor = true;
+			}
+			else
+			{
+				lClosest = dRedL;
+				leftColor = false;
+			}
+
+			pos = 0.0f;
+			collision = true;
 		}
-		else if (pos > 5 && (cubeXPositions[i] >= (handPosR.x - margin) && cubeXPositions[i] <= (handPosR.x + margin)) && (cubeYPositions[i] >= (handPosR.y - margin) && cubeYPositions[i] <= (handPosR.y + margin)))
+		if (pos > 5 && (cubeXPositions[i] >= (handPosR.x - margin) && cubeXPositions[i] <= (handPosR.x + margin)) && (cubeYPositions[i] >= (handPosR.y - margin) && cubeYPositions[i] <= (handPosR.y + margin)))
 		{
-				pos = 0.0f;
+
+			if (dRedR > dGreenR) {
+				rClosest = dGreenR;
+				rightColor = true;
+			}
+			else {
+				rClosest = dRedR;
+				rightColor = false;
+			}
+
+			pos = 0.0f;
+			collision = true;
+		}
+		if (collision) {
+			if (lClosest < rClosest) {
+				if (rightColor) {
+					score++;
+					std::cout << "right hand kills green cube" << std::endl;
+				}
+				if (!rightColor) {
+					score--;
+					std::cout << "right hand kills red cube" << std::endl;
+				}
 				std::cout << "right hand kills cube" << std::endl;
 				ranPos();
+				roundcount++;
+			}
+			else {
+				if (leftColor) {
+					score++;
+					std::cout << "left hand kills green cube" << std::endl;
+				}
+				if (!leftColor) {
+					score--;
+					std::cout << "left hand kills red cube" << std::endl;
+				}
+				ranPos();
+				roundcount++;
+			}
 		}
 		else
 		{
-			cubeCreate(cubeXPositions[i], cubeYPositions[i]);
+			if (!color)
+				cubeCreate(cubeXPositions[i], cubeYPositions[i], 0);
+			else
+				cubeCreate(cubeXPositions[i], cubeYPositions[i], 1);
+			color = !color;
 		}
 	}
-	roundcount++;
+}
 
-	writeTextAction();
-	writePlayerScoreList();
+float calculateDistance(float x1, float y1, float x2, float y2) {
+	return sqrt((pow(x1 - x2, 2) + pow(y1 - y2, 2)));
 }
 
 void createBackground()
@@ -229,7 +297,9 @@ void createBackground()
 	glm::mat4 background = glm::mat4(1.0f);
 	background = glm::translate(background, glm::vec3(0, 0, -50));
 
-
+	int red = 0;
+	int blue = 0;
+	int green = 0;
 
 	tigl::shader->setModelMatrix(background);
 	tigl::shader->enableColor(false);
@@ -287,7 +357,6 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 	handPosL.x += (float)(((target.x * 0.021875f) - handPosL.x) + 0) * handspeed;
 	handPosL.y += (float)(((target.y * 0.017f) - handPosL.y)) * handspeed;
 
-	//handPosL.y += (float)((((target.y * (0.017f)) - handPosL.y) + offsetY) * handspeed);
 
 	glm::mat4 lefthand(1.0f);
 	//lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
@@ -305,10 +374,23 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 }
 
 
-void cubeCreate(int x, int y)
+void cubeCreate(int x, int y, int color)
 {
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(x, y, -40));
+
+	int red = 0;
+	int green = 0;
+	if (color == 0)
+	{
+		red = 255;
+		redCube = cv::Point(x, y);
+	}
+	else if (color == 1)
+	{
+		green = 255;
+		greenCube = cv::Point(x, y);
+	}
 
 	//(x-as, y-as, z-as) (left/right, up/down, front/back)
 	model = glm::translate(model, glm::vec3(0, 0, pos));
@@ -371,7 +453,8 @@ void ranPos()
 void writeTextAction()
 {
 	//Get fitting text for status of the game
-
+	std::string scoreText = "score: " + std::to_string(score);
+	std::string roundText = "round: " + std::to_string(roundcount) + " / 20";
 	if (gameOnPause)
 	{
 		mainText.draw("Press 'S' to start", 0, 32);
@@ -380,6 +463,8 @@ void writeTextAction()
 	{
 		mainText.draw("Press 'P' to pause", 0, 32);
 	}
+	mainText.draw(scoreText, 0, 64);
+	mainText.draw(roundText, 0, 96);
 
 }
 
