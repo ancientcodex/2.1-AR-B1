@@ -11,5 +11,6 @@ class DataManager
 public:
 	void addPoint(std::string hand, cv::Point p);
 	std::tuple<std::string, cv::Point> getPoint();
+	void clearBuffer();
 };
 

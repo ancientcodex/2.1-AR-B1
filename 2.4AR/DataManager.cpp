@@ -25,3 +25,12 @@ std::tuple<std::string, cv::Point> DataManager::getPoint()
 	return t;
 }
 
+void DataManager::clearBuffer() {
+	mtx.lock();
+	while (!stream.empty())
+	{
+		stream.pop();
+	}
+	mtx.unlock();
+}
+

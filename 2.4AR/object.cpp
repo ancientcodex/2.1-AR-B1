@@ -1,7 +1,7 @@
 #include "3D.h"
 
 int size = 2; // amount of cubes at the time.
-int roundcount = 19;
+int roundcount = 0;
 int cubeXPositions[2];
 int cubeYPositions[2];
 cv::Point redCube;
@@ -17,7 +17,7 @@ GLFWwindow* window;
 ObjModel* objmodelr;
 ObjModel* objmodell;
 std::list<std::string> players;
-bool gameOnPause = false;
+bool gameOnPause = true;
 bool gameIsFinished = false;
 textOutput mainText;
 glm::mat4 lefthand = glm::mat4(1.0f);
@@ -77,13 +77,16 @@ void init()
 				gameOnPause = true;
 				if(roundcount > 20){
 					roundcount = 0;
+					score = 0;
 				}
 				break;
 			case GLFW_KEY_S:
 				gameOnPause = false;
 				if(roundcount > 20){
 					roundcount = 0;
+					score = 0;
 				}
+				if (dataManager != NULL) dataManager->clearBuffer();
 				break;
 			}
 		});
@@ -111,58 +114,27 @@ void init()
 	//Init to draw texts
 	mainText.init();
 
-	//TODO: Diffrent place will help openGL to run better
-	if (gameIsFinished)
-	{
-		//get name
-		std::string name;
-		std::cout << "fill in name: (max 8 characters)" << std::endl;
-		std::cin >> name;
-		int sizeName = name.size();
-		if (sizeName > 8)
-		{
-			std::cout << "fill in name: (max 8 characters)" << std::endl;
-			std::cin >> name;
-			int sizeName = name.size();
-		}
-		else
-		{
-			//fill in right value of points for player
-			Player player(name, 1);
-			std::string t = player.toString();
-			players.push_front(t);
-
-			//safe player to txt
-			std::ofstream output("gamesplayer.txt", std::ios_base::app);
-			output << t << std::endl;
-			std::cout << "play saved" << std::endl;
-			output.close();
-
-			gameIsFinished = false;
-		}
-	}
 }
 
 void update()
 {
-	if (roundcount > 20) {
-		gameOnPause = true;
+	if (roundcount >= 20) {
+		gameIsFinished = true;
 	}
 	camera->update(window);
-	if (!gameOnPause) {
+	if (!gameOnPause ) {
 		if (pos >= 18.0f)
 		{
 			pos = 0.0f;
 			ranPos();
 			roundcount++;
 		}
-		angle += 0.01f;
+		angle += 0.04f;
 		pos += 0.02f;
 
 
 	}
-
-
+	checkEndGame();
 }
 
 void draw()
@@ -179,13 +151,13 @@ void draw()
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), width / (float)height, 0.1f, 100.0f);
 	// eye is camera position, center is where you look at and up is which direction is up.
-	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 	tigl::shader->setProjectionMatrix(projection);
 	tigl::shader->setViewMatrix(view);
 
 	glEnable(GL_DEPTH_TEST);
-	if (!gameOnPause ) {
+	if (!gameOnPause) {
 		cv::Point left, right;
 		std::tuple<std::string, cv::Point> temp;
 		temp = dataManager->getPoint();
@@ -467,6 +439,43 @@ void writeTextAction()
 	mainText.draw(roundText, 0, 96);
 
 }
+
+void checkEndGame(){
+	//TODO: Diffrent place will help openGL to run better
+	if (gameIsFinished)
+	{
+		//get name
+		std::string name;
+		std::cout << "fill in name: (max 8 characters)" << std::endl;
+		std::cin >> name;
+		int sizeName = name.size();
+		if (sizeName > 8)
+		{
+			std::cout << "fill in name: (max 8 characters)" << std::endl;
+			std::cin >> name;
+			int sizeName = name.size();
+		}
+		else
+		{
+			//fill in right value of points for player
+			Player player(name, score);
+			std::string t = player.toString();
+			players.push_front(t);
+
+			//safe player to txt
+			std::ofstream output("gamesplayer.txt", std::ios_base::app);
+			output << t << std::endl;
+			std::cout << "play saved" << std::endl;
+			output.close();
+
+			gameIsFinished = false;
+			roundcount = 0;
+			score = 0;
+			gameOnPause = true;
+		}
+	}
+}
+
 
 void writePlayerScoreList()
 {

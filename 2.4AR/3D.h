@@ -29,6 +29,7 @@ void draw();
 void ranPos();
 void createBackground();
 void cubeCreate(int x, int y, int color);
+void checkEndGame();
 void createLeftHand(std::tuple<std::string, cv::Point> t);
 void createRightHand(std::tuple<std::string, cv::Point> t);
 void writeTextAction();
