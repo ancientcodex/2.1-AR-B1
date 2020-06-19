@@ -200,14 +200,18 @@ void draw()
 		}
 
 		//colision detection
-		int margin = 0.5;
-		if (cubeXPositions[i] <= (handPosL.x - margin) && cubeXPositions[i] >= (handPosL.x + margin) && cubeYPositions[i] <= (handPosL.y - margin) && cubeYPositions[i] >= (handPosL.y + margin))
+		float margin = 5.0f;
+		if (pos > 5 && (cubeXPositions[i] >= (handPosL.x - margin) && cubeXPositions[i] <= (handPosL.x + margin)) && (cubeYPositions[i] >= (handPosL.y - margin) && cubeYPositions[i] <= (handPosL.y + margin)))
 		{
-			pos = 0.0f;
+				pos = 0.0f;
+				std::cout << "left hand kills cube" << std::endl;
+				ranPos();
 		}
-		else if (cubeXPositions[i] <= (handPosR.x - margin) && cubeXPositions[i] >= (handPosR.x + margin) && cubeYPositions[i] <= (handPosR.y - margin) && cubeYPositions[i] >= (handPosR.y + margin))
+		else if (pos > 5 && (cubeXPositions[i] >= (handPosR.x - margin) && cubeXPositions[i] <= (handPosR.x + margin)) && (cubeYPositions[i] >= (handPosR.y - margin) && cubeYPositions[i] <= (handPosR.y + margin)))
 		{
-			pos = 0.0f;
+				pos = 0.0f;
+				std::cout << "right hand kills cube" << std::endl;
+				ranPos();
 		}
 		else
 		{
@@ -272,7 +276,7 @@ void createRightHand(std::tuple<std::string, cv::Point> t)
 void createLeftHand(std::tuple<std::string, cv::Point> t)
 {
 	cv::Point target;
-	float handspeed =0.05f;
+	float handspeed = 0.05f;
 	if (std::get<0>(t) == "handL") {
 		//targeting
 		target = std::get<1>(t);
@@ -280,8 +284,8 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 	}
 	target = lastTargetL;
 
-	handPosL.x += (float) (((target.x * 0.021875f) - handPosL.x) + 0 ) * handspeed;
-	handPosL.y += (float) (((target.y * 0.068f) - handPosL.y) - 7.5 ) * handspeed;
+	handPosL.x += (float)(((target.x * 0.021875f) - handPosL.x) + 0) * handspeed;
+	handPosL.y += (float)(((target.y * 0.017f) - handPosL.y)) * handspeed;
 
 	//handPosL.y += (float)((((target.y * (0.017f)) - handPosL.y) + offsetY) * handspeed);
 
@@ -295,7 +299,7 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 	tigl::shader->enableColor(true);
 	tigl::shader->enableTexture(false);
 
-	std::cout << " x: " << handPosL.x << " y: " << handPosL.y << std::endl;
+	//std::cout << " x: " << handPosL.x << " y: " << handPosL.y << std::endl;
 
 	objmodell->draw();
 }
@@ -358,8 +362,8 @@ void ranPos()
 {
 	for (int i = 0; i < size; i++)
 	{
-		cubeXPositions[i] = (rand() % 50) - 24;
-		cubeYPositions[i] = (rand() % 30) - 20;
+		cubeXPositions[i] = (rand() % 30) - 15;
+		cubeYPositions[i] = (rand() % 20) - 10;
 		std::cout << "X: " << cubeXPositions[i] << ". Y: " << cubeYPositions[i] << ". ";
 	}
 }
