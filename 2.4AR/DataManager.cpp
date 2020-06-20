@@ -1,4 +1,5 @@
 #include "DataManager.h"
+#include <mutex>
 
 std::mutex mtx;
 
@@ -22,5 +23,14 @@ std::tuple<std::string, cv::Point> DataManager::getPoint()
 	stream.pop();
 	mtx.unlock();
 	return t;
+}
+
+void DataManager::clearBuffer() {
+	mtx.lock();
+	while (!stream.empty())
+	{
+		stream.pop();
+	}
+	mtx.unlock();
 }
 
