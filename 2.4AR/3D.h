@@ -15,6 +15,7 @@
 #include <fstream>
 #include <iostream> 
 #include <math.h> 
+#include "Texture.h"
 
 using tigl::Vertex;
 

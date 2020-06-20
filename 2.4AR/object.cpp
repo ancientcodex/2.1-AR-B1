@@ -7,7 +7,6 @@ int cubeYPositions[2];
 cv::Point redCube;
 cv::Point greenCube;
 
-
 /*
   TODO: make all of the different methods into small classes
   for cleanup of the deamon child!
@@ -32,7 +31,7 @@ cv::Point lastTargetR;
 glm::vec3 handPosR = glm::vec3(0.0f, 0.0f, 3.0f);
 cv::Point lastTargetL;
 glm::vec3 handPosL = glm::vec3(0.0f, 0.0f, 3.0f);
-
+Texture* t;
 
 void startup(std::shared_ptr<DataManager> dManager)
 {
@@ -113,7 +112,7 @@ void init()
 
 	//Init to draw texts
 	mainText.init();
-
+	 t = new Texture("data/background.jpg");
 }
 
 void update()
@@ -131,8 +130,6 @@ void update()
 		}
 		angle += 0.04f;
 		pos += 0.02f;
-
-
 	}
 	checkEndGame();
 }
@@ -154,7 +151,7 @@ void draw()
 	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 	tigl::shader->setProjectionMatrix(projection);
-	tigl::shader->setViewMatrix(view);
+	tigl::shader->setViewMatrix(camera->getMatrix());
 
 	glEnable(GL_DEPTH_TEST);
 	if (!gameOnPause) {
@@ -163,6 +160,7 @@ void draw()
 		temp = dataManager->getPoint();
 		createLeftHand(temp);
 		createRightHand(temp);
+		createBackground();
 		left = std::get<1>(temp);
 		temp = dataManager->getPoint();
 		createLeftHand(temp);
@@ -203,13 +201,11 @@ void collisionDetection() {
 				lClosest = dRedL;
 				leftColor = false;
 			}
-
 			pos = 0.0f;
 			collision = true;
 		}
 		if (pos > 5 && (cubeXPositions[i] >= (handPosR.x - margin) && cubeXPositions[i] <= (handPosR.x + margin)) && (cubeYPositions[i] >= (handPosR.y - margin) && cubeYPositions[i] <= (handPosR.y + margin)))
 		{
-
 			if (dRedR > dGreenR) {
 				rClosest = dGreenR;
 				rightColor = true;
@@ -218,7 +214,6 @@ void collisionDetection() {
 				rClosest = dRedR;
 				rightColor = false;
 			}
-
 			pos = 0.0f;
 			collision = true;
 		}
@@ -263,29 +258,23 @@ void collisionDetection() {
 float calculateDistance(float x1, float y1, float x2, float y2) {
 	return sqrt((pow(x1 - x2, 2) + pow(y1 - y2, 2)));
 }
-
 void createBackground()
 {
+	t->bind();
 	glm::mat4 background = glm::mat4(1.0f);
-	background = glm::translate(background, glm::vec3(0, 0, -50));
-
-	int red = 0;
-	int blue = 0;
-	int green = 0;
+	background = glm::translate(background, glm::vec3(0, 0, -60));
 
 	tigl::shader->setModelMatrix(background);
 	tigl::shader->enableColor(false);
 	tigl::shader->enableTexture(true);
 
 	tigl::begin(GL_QUADS);
-
-	tigl::addVertex(Vertex::PC(glm::vec3(-100, 100, 0), glm::vec4(red, blue, blue, 1)));
-	tigl::addVertex(Vertex::PC(glm::vec3(100, 100, 0), glm::vec4(blue, green, red, 1)));
-	tigl::addVertex(Vertex::PC(glm::vec3(100, -100, 0), glm::vec4(red, green, blue, 1)));
-	tigl::addVertex(Vertex::PC(glm::vec3(-100, -100, 0), glm::vec4(green, green, blue, 1)));
+	tigl::addVertex(tigl::Vertex::PT(glm::vec3(-100, 50, 0), glm::vec2(0, 1)));
+	tigl::addVertex(tigl::Vertex::PT(glm::vec3(100, 50, 0), glm::vec2(1, 1)));
+	tigl::addVertex(tigl::Vertex::PT(glm::vec3(100, -50, 0), glm::vec2(1, 0)));
+	tigl::addVertex(tigl::Vertex::PT(glm::vec3(-100, -50, 0), glm::vec2(0, 0)));
 
 	tigl::end();
-
 }
 
 void createRightHand(std::tuple<std::string, cv::Point> t)
@@ -304,8 +293,9 @@ void createRightHand(std::tuple<std::string, cv::Point> t)
 	handPosR.y += (float)((((target.y * 0.017f) - handPosR.y) + offsetY) * handspeed);
 
 	glm::mat4 righthand(1.0f);
-	//righthand = glm::rotate(righthand, 0.5f, glm::vec3(0, 1, 0));
 	righthand = glm::translate(righthand, -handPosR);
+	righthand = glm::rotate(righthand, glm::radians(270.0f), glm::vec3(0, 0, 1));
+	righthand = glm::rotate(righthand, glm::radians(270.0f), glm::vec3(1, 0, 0));
 	//righthand = glm::translate(righthand, glm::vec3(0, -3, 0));
 
 	tigl::shader->setModelMatrix(righthand);
@@ -331,8 +321,9 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 
 
 	glm::mat4 lefthand(1.0f);
-	//lefthand = glm::rotate(lefthand, 0.5f, glm::vec3(0, 0, 1));
 	lefthand = glm::translate(lefthand, -handPosL);
+	lefthand = glm::rotate(lefthand, glm::radians(90.0f), glm::vec3(0, 0, 1));
+    lefthand = glm::rotate(lefthand, glm::radians(270.0f), glm::vec3(1, 0, 0));
 	//lefthand = glm::translate(lefthand, glm::vec3(0, -3, 0));
 
 
@@ -344,7 +335,6 @@ void createLeftHand(std::tuple<std::string, cv::Point> t)
 
 	objmodell->draw();
 }
-
 
 void cubeCreate(int x, int y, int color)
 {
